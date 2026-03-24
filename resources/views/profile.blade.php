@@ -1,13 +1,204 @@
-@extends('layouts.tenant')
+@extends('layouts.central')
 
-@section('title', 'Profile - Meat Shop POS')
+@section('title', 'My Profile - MeatShop POS')
 
 @section('content')
 <div class="container-fluid">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <div>
+            <h1 class="h2 mb-0">My Profile</h1>
+            <p class="text-muted mb-0">Manage your personal account information</p>
+        </div>
+        <div>
+            <button class="btn btn-primary" onclick="saveProfile()">
+                <i class="fas fa-save me-2"></i>Save Changes
+            </button>
+        </div>
+    </div>
+
     <div class="row">
-        <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1 class="h3 mb-0">My Profile</h1>
+        <!-- Profile Information -->
+        <div class="col-lg-6">
+            <div class="card shadow-lg">
+                <div class="card-header bg-white border-0 py-3">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-user me-2"></i>Profile Information
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form id="profileForm">
+                        @csrf
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label for="name" class="form-label">
+                                        <i class="fas fa-user me-1"></i>Full Name
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-user"></i>
+                                        </span>
+                                        <input type="text" class="form-control" id="name" name="name" 
+                                               value="{{ session('user.name') ?? 'John Doe' }}" placeholder="Enter your full name">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label for="email" class="form-label">
+                                        <i class="fas fa-envelope me-1"></i>Email Address
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-envelope"></i>
+                                        </span>
+                                        <input type="email" class="form-control" id="email" name="email" 
+                                               value="{{ session('user.email') ?? 'john@example.com' }}" placeholder="Enter your email">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label for="phone" class="form-label">
+                                        <i class="fas fa-phone me-1"></i>Phone Number
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-phone"></i>
+                                        </span>
+                                        <input type="tel" class="form-control" id="phone" name="phone" 
+                                               value="{{ session('user.phone') ?? '' }}" placeholder="Enter your phone number">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label for="role" class="form-label">
+                                        <i class="fas fa-user-tag me-1"></i>Role
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-user-tag"></i>
+                                        </span>
+                                        <select class="form-select" id="role" name="role">
+                                            <option value="admin" {{ (session('user.role') ?? 'admin') == 'admin' ? 'selected' : '' }}>Administrator</option>
+                                            <option value="manager" {{ (session('user.role') ?? 'admin') == 'manager' ? 'selected' : '' }}>Manager</option>
+                                            <option value="user" {{ (session('user.role') ?? 'admin') == 'user' ? 'selected' : '' }}>User</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12">
+                                <div class="form-group mb-3">
+                                    <label for="bio" class="form-label">
+                                        <i class="fas fa-info-circle me-1"></i>Bio
+                                    </label>
+                                    <textarea class="form-control" id="bio" name="bio" rows="3" 
+                                              placeholder="Tell us about yourself">{{ session('user.bio') ?? '' }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Account Activity -->
+        <div class="col-lg-6">
+            <div class="card shadow-lg">
+                <div class="card-header bg-white border-0 py-3">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-clock me-2"></i>Recent Activity
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-marker bg-success">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div class="timeline-content">
+                                <h6 class="mb-1">Logged in</h6>
+                                <p class="text-muted mb-0">{{ now()->format('M d, Y H:i') }}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-item">
+                            <div class="timeline-marker bg-primary">
+                                <i class="fas fa-building"></i>
+                            </div>
+                            <div class="timeline-content">
+                                <h6 class="mb-1">Created tenant</h6>
+                                <p class="text-muted mb-0">{{ now()->subDays(7)->format('M d, Y H:i') }}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-item">
+                            <div class="timeline-marker bg-warning">
+                                <i class="fas fa-edit"></i>
+                            </div>
+                            <div class="timeline-content">
+                                <h6 class="mb-1">Updated profile</h6>
+                                <p class="text-muted mb-0">{{ now()->subDays(14)->format('M d, Y H:i') }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.timeline {
+    position: relative;
+    padding-left: 2rem;
+}
+.timeline-item {
+    position: relative;
+    margin-bottom: 2rem;
+}
+.timeline-marker {
+    position: absolute;
+    left: -2.5rem;
+    top: 0;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.8rem;
+}
+.timeline-content {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    border-left: 3px solid #007bff;
+}
+.timeline-content h6 {
+    color: #495057;
+    font-weight: 600;
+}
+</style>
+
+<script>
+function saveProfile() {
+    Swal.fire({
+        title: 'Profile Updated!',
+        text: 'Your profile information has been successfully saved.',
+        icon: 'success',
+        confirmButtonText: 'Great!'
+    });
+}
+</script>
+@endsection
                 <button class="btn btn-primary" onclick="editProfile()">
                     <i class="fas fa-edit me-2"></i>Edit Profile
                 </button>

@@ -1,13 +1,237 @@
-@extends('layouts.tenant')
+@extends('layouts.central')
 
-@section('title', 'Settings - Meat Shop POS')
+@section('title', 'Settings - MeatShop POS')
 
 @section('content')
 <div class="container-fluid">
     <!-- Page Header -->
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">System Settings</h1>
-        <div class="btn-toolbar mb-2 mb-md-0">
+        <div>
+            <h1 class="h2 mb-0">Settings</h1>
+            <p class="text-muted mb-0">Configure your application preferences</p>
+        </div>
+        <div>
+            <button class="btn btn-primary" onclick="saveSettings()">
+                <i class="fas fa-save me-2"></i>Save Settings
+            </button>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- General Settings -->
+        <div class="col-lg-6">
+            <div class="card shadow-lg">
+                <div class="card-header bg-white border-0 py-3">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-cog me-2"></i>General Settings
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form id="settingsForm">
+                        @csrf
+                        <div class="row g-4">
+                            <div class="col-12">
+                                <div class="form-group mb-3">
+                                    <label for="site_name" class="form-label">
+                                        <i class="fas fa-building me-1"></i>Application Name
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-building"></i>
+                                        </span>
+                                        <input type="text" class="form-control" id="site_name" name="site_name" 
+                                               value="MeatShop POS" placeholder="Enter application name">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label for="timezone" class="form-label">
+                                        <i class="fas fa-clock me-1"></i>Timezone
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-clock"></i>
+                                        </span>
+                                        <select class="form-select" id="timezone" name="timezone">
+                                            <option value="UTC">UTC</option>
+                                            <option value="America/New_York">Eastern Time (ET)</option>
+                                            <option value="America/Chicago">Central Time (CT)</option>
+                                            <option value="America/Denver">Mountain Time (MT)</option>
+                                            <option value="America/Los_Angeles">Pacific Time (PT)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label for="language" class="form-label">
+                                        <i class="fas fa-language me-1"></i>Language
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-language"></i>
+                                        </span>
+                                        <select class="form-select" id="language" name="language">
+                                            <option value="en">English</option>
+                                            <option value="es">Español</option>
+                                            <option value="fr">Français</option>
+                                            <option value="de">Deutsch</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12">
+                                <div class="form-group mb-3">
+                                    <label for="email_notifications" class="form-label">
+                                        <i class="fas fa-envelope me-1"></i>Email Notifications
+                                    </label>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="email_notifications" name="email_notifications" checked>
+                                        <label class="form-check-label" for="email_notifications">
+                                            Receive email notifications for important events
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Security Settings -->
+        <div class="col-lg-6">
+            <div class="card shadow-lg">
+                <div class="card-header bg-white border-0 py-3">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-shield-alt me-2"></i>Security Settings
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form id="securityForm">
+                        @csrf
+                        <div class="row g-4">
+                            <div class="col-12">
+                                <div class="form-group mb-3">
+                                    <label for="current_password" class="form-label">
+                                        <i class="fas fa-lock me-1"></i>Current Password
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-lock"></i>
+                                        </span>
+                                        <input type="password" class="form-control" id="current_password" name="current_password" 
+                                               placeholder="Enter current password">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label for="new_password" class="form-label">
+                                        <i class="fas fa-key me-1"></i>New Password
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-key"></i>
+                                        </span>
+                                        <input type="password" class="form-control" id="new_password" name="new_password" 
+                                               placeholder="Enter new password">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label for="confirm_password" class="form-label">
+                                        <i class="fas fa-key me-1"></i>Confirm New Password
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-key"></i>
+                                        </span>
+                                        <input type="password" class="form-control" id="confirm_password" name="confirm_password" 
+                                               placeholder="Confirm new password">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12">
+                                <div class="form-group mb-3">
+                                    <label for="two_factor" class="form-label">
+                                        <i class="fas fa-mobile-alt me-1"></i>Two-Factor Authentication
+                                    </label>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="two_factor" name="two_factor">
+                                        <label class="form-check-label" for="two_factor">
+                                            Enable two-factor authentication for enhanced security
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12">
+                                <div class="form-group mb-3">
+                                    <label for="session_timeout" class="form-label">
+                                        <i class="fas fa-clock me-1"></i>Session Timeout
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-clock"></i>
+                                        </span>
+                                        <select class="form-select" id="session_timeout" name="session_timeout">
+                                            <option value="15">15 minutes</option>
+                                            <option value="30" selected>30 minutes</option>
+                                            <option value="60">1 hour</option>
+                                            <option value="120">2 hours</option>
+                                            <option value="480">8 hours</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.form-check-input:checked {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.form-check-label {
+    cursor: pointer;
+}
+</style>
+
+<script>
+function saveSettings() {
+    Swal.fire({
+        title: 'Settings Saved!',
+        text: 'Your settings have been successfully updated.',
+        icon: 'success',
+        confirmButtonText: 'Great!'
+    });
+}
+
+function saveSecurity() {
+    Swal.fire({
+        title: 'Security Updated!',
+        text: 'Your security settings have been successfully updated.',
+        icon: 'success',
+        confirmButtonText: 'Great!'
+    });
+}
+</script>
+@endsection
             <div class="btn-group me-2">
                 <button type="button" class="btn btn-sm btn-primary">
                     <i class="fas fa-save me-1"></i> Save Changes

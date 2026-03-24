@@ -3,8 +3,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Meat Shop SaaS - @yield('title', 'Central Dashboard')</title>
+    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
+    <title>Meat Shop SaaS - <?php echo $__env->yieldContent('title', 'Central Dashboard'); ?></title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -132,65 +132,65 @@
                 <i class="fas fa-building"></i>
                 <h5 class="mb-0">MeatShop Central</h5>
             </div>
-            @if(session('user.name'))
-                <small class="text-white-50">{{ session('user.name') }}</small>
-            @endif
+            <?php if(session('user.name')): ?>
+                <small class="text-white-50"><?php echo e(session('user.name')); ?></small>
+            <?php endif; ?>
         </div>
 
         <nav class="nav flex-column">
             <!-- Dashboard -->
-            <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">
+            <a class="nav-link <?php echo e(request()->routeIs('dashboard') ? 'active' : ''); ?>" href="<?php echo e(route('dashboard')); ?>">
                 <i class="fas fa-chart-line me-2"></i>Dashboard
-                <span class="badge bg-primary text-white ms-2" style="font-size: 0.6rem;">{{ \App\Models\Tenant::count() }}</span>
+                <span class="badge bg-primary text-white ms-2" style="font-size: 0.6rem;"><?php echo e(\App\Models\Tenant::count()); ?></span>
             </a>
             
             <!-- Tenants Management -->
             <div class="nav-dropdown">
-                <a class="nav-link {{ request()->routeIs('tenants.*') ? 'active' : '' }}" href="{{ route('tenants.index') }}">
+                <a class="nav-link <?php echo e(request()->routeIs('tenants.*') ? 'active' : ''); ?>" href="<?php echo e(route('tenants.index')); ?>">
                     <i class="fas fa-store me-2"></i>Tenants
                     <i class="fas fa-chevron-down ms-1"></i>
                 </a>
                 <div class="dropdown-menu">
-                    <a class="dropdown-item" href="{{ route('tenants.index') }}">
+                    <a class="dropdown-item" href="<?php echo e(route('tenants.index')); ?>">
                         <i class="fas fa-list me-2"></i>All Tenants
-                        <span class="badge bg-primary text-white ms-auto">{{ \App\Models\Tenant::count() }}</span>
+                        <span class="badge bg-primary text-white ms-auto"><?php echo e(\App\Models\Tenant::count()); ?></span>
                     </a>
-                    <a class="dropdown-item" href="{{ route('tenants.create') }}">
+                    <a class="dropdown-item" href="<?php echo e(route('tenants.create')); ?>">
                         <i class="fas fa-plus-circle me-2"></i>Create New Tenant
                     </a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="{{ route('tenants.index') }}?filter=active">
+                    <a class="dropdown-item" href="<?php echo e(route('tenants.index')); ?>?filter=active">
                         <i class="fas fa-check-circle me-2 text-success"></i>Active Only
-                        <span class="badge bg-success text-white ms-auto">{{ \App\Models\Tenant::where('status', 'active')->count() }}</span>
+                        <span class="badge bg-success text-white ms-auto"><?php echo e(\App\Models\Tenant::where('status', 'active')->count()); ?></span>
                     </a>
-                    <a class="dropdown-item" href="{{ route('tenants.index') }}?filter=suspended">
+                    <a class="dropdown-item" href="<?php echo e(route('tenants.index')); ?>?filter=suspended">
                         <i class="fas fa-pause-circle me-2 text-warning"></i>Suspended Only
-                        <span class="badge bg-warning text-white ms-auto">{{ \App\Models\Tenant::where('status', 'suspended')->count() }}</span>
+                        <span class="badge bg-warning text-white ms-auto"><?php echo e(\App\Models\Tenant::where('status', 'suspended')->count()); ?></span>
                     </a>
                 </div>
             </div>
             
             <!-- Subscription & Billing -->
             <div class="nav-dropdown">
-                <a class="nav-link {{ request()->routeIs('subscription.*') ? 'active' : '' }}" href="{{ route('subscription.billing') }}">
+                <a class="nav-link <?php echo e(request()->routeIs('subscription.*') ? 'active' : ''); ?>" href="<?php echo e(route('subscription.billing')); ?>">
                     <i class="fas fa-file-invoice-dollar me-2"></i>Billing
                     <i class="fas fa-chevron-down ms-1"></i>
                 </a>
                 <div class="dropdown-menu">
-                    <a class="dropdown-item" href="{{ route('subscription.billing') }}">
+                    <a class="dropdown-item" href="<?php echo e(route('subscription.billing')); ?>">
                         <i class="fas fa-file-invoice me-2"></i>Billing Overview
                     </a>
-                    <a class="dropdown-item" href="{{ route('subscription.billing') }}?tab=invoices">
+                    <a class="dropdown-item" href="<?php echo e(route('subscription.billing')); ?>?tab=invoices">
                         <i class="fas fa-file-invoice me-2"></i>Invoices
                     </a>
-                    <a class="dropdown-item" href="{{ route('subscription.billing') }}?tab=payments">
+                    <a class="dropdown-item" href="<?php echo e(route('subscription.billing')); ?>?tab=payments">
                         <i class="fas fa-credit-card me-2"></i>Payment History
                     </a>
-                    <a class="dropdown-item" href="{{ route('subscription.billing') }}?tab=methods">
+                    <a class="dropdown-item" href="<?php echo e(route('subscription.billing')); ?>?tab=methods">
                         <i class="fas fa-credit-card me-2"></i>Payment Methods
                     </a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="{{ route('subscription.billing') }}?tab=settings">
+                    <a class="dropdown-item" href="<?php echo e(route('subscription.billing')); ?>?tab=settings">
                         <i class="fas fa-cog me-2"></i>Billing Settings
                     </a>
                 </div>
@@ -198,32 +198,32 @@
             
             <!-- Plans & Pricing -->
             <div class="nav-dropdown">
-                <a class="nav-link {{ request()->routeIs('pricing') ? 'active' : '' }}" href="{{ route('pricing') }}">
+                <a class="nav-link <?php echo e(request()->routeIs('pricing') ? 'active' : ''); ?>" href="<?php echo e(route('pricing')); ?>">
                     <i class="fas fa-tags me-2"></i>Plans
                     <i class="fas fa-chevron-down ms-1"></i>
                 </a>
                 <div class="dropdown-menu">
-                    <a class="dropdown-item" href="{{ route('pricing') }}">
+                    <a class="dropdown-item" href="<?php echo e(route('pricing')); ?>">
                         <i class="fas fa-tags me-2"></i>All Plans
                     </a>
-                    <a class="dropdown-item" href="{{ route('pricing') }}?plan=basic">
+                    <a class="dropdown-item" href="<?php echo e(route('pricing')); ?>?plan=basic">
                         <i class="fas fa-crown me-2 text-primary"></i>Basic Plan
                     </a>
-                    <a class="dropdown-item" href="{{ route('pricing') }}?plan=standard">
+                    <a class="dropdown-item" href="<?php echo e(route('pricing')); ?>?plan=standard">
                         <i class="fas fa-crown me-2 text-warning"></i>Standard Plan
                     </a>
-                    <a class="dropdown-item" href="{{ route('pricing') }}?plan=premium">
+                    <a class="dropdown-item" href="<?php echo e(route('pricing')); ?>?plan=premium">
                         <i class="fas fa-crown me-2 text-danger"></i>Premium Plan
                     </a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="{{ route('pricing') }}?compare">
+                    <a class="dropdown-item" href="<?php echo e(route('pricing')); ?>?compare">
                         <i class="fas fa-balance-scale me-2"></i>Compare Plans
                     </a>
                 </div>
             </div>
             
             <!-- Quick Actions -->
-            <a class="nav-link" href="{{ route('tenants.create') }}">
+            <a class="nav-link" href="<?php echo e(route('tenants.create')); ?>">
                 <i class="fas fa-plus-circle me-2"></i>Create Tenant
             </a>
             
@@ -231,16 +231,17 @@
             
             <!-- User Account -->
             <div class="nav-dropdown">
-                @if(session('user.name'))
+                <?php if(session('user.name')): ?>
                     <a class="nav-link" href="#" onclick="toggleUserMenu()">
-                        <i class="fas fa-user me-2"></i>{{ session('user.name') }}
+                        <i class="fas fa-user me-2"></i><?php echo e(session('user.name')); ?>
+
                         <i class="fas fa-chevron-down ms-1"></i>
                     </a>
                     <div class="dropdown-menu" id="userMenu">
-                        <a class="dropdown-item" href="{{ route('profile') }}">
+                        <a class="dropdown-item" href="<?php echo e(route('profile')); ?>">
                             <i class="fas fa-user me-2"></i>My Profile
                         </a>
-                        <a class="dropdown-item" href="{{ route('settings') }}">
+                        <a class="dropdown-item" href="<?php echo e(route('settings')); ?>">
                             <i class="fas fa-cog me-2"></i>Settings
                         </a>
                         <div class="dropdown-divider"></div>
@@ -252,15 +253,15 @@
                             <i class="fas fa-question-circle me-2"></i>Help & Support
                         </a>
                     </div>
-                @else
-                    <a class="nav-link" href="{{ route('login') }}">
+                <?php else: ?>
+                    <a class="nav-link" href="<?php echo e(route('login')); ?>">
                         <i class="fas fa-sign-in-alt me-2"></i>Login
                     </a>
-                @endif
+                <?php endif; ?>
             </div>
             
-            <form action="{{ route('logout') }}" method="POST" class="m-0">
-                @csrf
+            <form action="<?php echo e(route('logout')); ?>" method="POST" class="m-0">
+                <?php echo csrf_field(); ?>
                 <button type="submit" class="nav-link text-start w-100 border-0 bg-transparent">
                     <i class="fas fa-sign-out-alt me-2"></i>Logout
                 </button>
@@ -278,7 +279,7 @@
         </nav>
 
         <div class="container-fluid p-4">
-            @yield('content')
+            <?php echo $__env->yieldContent('content'); ?>
         </div>
     </div>
 
@@ -313,19 +314,19 @@
                     <div class="text-start">
                         <div class="d-flex justify-content-between mb-2">
                             <span>Total Tenants:</span>
-                            <strong>{{ \App\Models\Tenant::count() }}</strong>
+                            <strong><?php echo e(\App\Models\Tenant::count()); ?></strong>
                         </div>
                         <div class="d-flex justify-content-between mb-2">
                             <span>Active:</span>
-                            <strong class="text-success">{{ \App\Models\Tenant::where('status', 'active')->count() }}</strong>
+                            <strong class="text-success"><?php echo e(\App\Models\Tenant::where('status', 'active')->count()); ?></strong>
                         </div>
                         <div class="d-flex justify-content-between mb-2">
                             <span>Suspended:</span>
-                            <strong class="text-warning">{{ \App\Models\Tenant::where('status', 'suspended')->count() }}</strong>
+                            <strong class="text-warning"><?php echo e(\App\Models\Tenant::where('status', 'suspended')->count()); ?></strong>
                         </div>
                         <div class="d-flex justify-content-between">
                             <span>Unpaid:</span>
-                            <strong class="text-danger">{{ \App\Models\Tenant::where('status', 'unpaid')->count() }}</strong>
+                            <strong class="text-danger"><?php echo e(\App\Models\Tenant::where('status', 'unpaid')->count()); ?></strong>
                         </div>
                     </div>
                 `,
@@ -401,7 +402,7 @@
         // Show notifications for session messages
         window.addEventListener('DOMContentLoaded', function() {
             // Check for success messages
-            const successMessages = @json(session('success', []));
+            const successMessages = <?php echo json_encode(session('success', []), 512) ?>;
             if (successMessages && successMessages.length > 0) {
                 if (typeof successMessages === 'string') {
                     showNotification('success', 'Success!', successMessages);
@@ -413,7 +414,7 @@
             }
             
             // Check for error messages
-            const errorMessages = @json(session('error', []));
+            const errorMessages = <?php echo json_encode(session('error', []), 512) ?>;
             if (errorMessages && errorMessages.length > 0) {
                 if (typeof errorMessages === 'string') {
                     showNotification('error', 'Error!', errorMessages);
@@ -425,7 +426,7 @@
             }
             
             // Check for info messages
-            const infoMessages = @json(session('info', []));
+            const infoMessages = <?php echo json_encode(session('info', []), 512) ?>;
             if (infoMessages && infoMessages.length > 0) {
                 if (typeof infoMessages === 'string') {
                     showNotification('info', 'Information', infoMessages);
@@ -439,3 +440,4 @@
     </script>
 </body>
 </html>
+<?php /**PATH C:\Users\Rusty\Music\MeatShop\resources\views/layouts/central.blade.php ENDPATH**/ ?>

@@ -12,6 +12,14 @@ use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 
 class TenancyServiceProvider extends ServiceProvider
 {
+    protected $app;
+    
+    public function __construct($app)
+    {
+        parent::__construct($app);
+        $this->app = $app;
+    }
+
     public function register(): void
     {
     }

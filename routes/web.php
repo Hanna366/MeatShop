@@ -32,6 +32,15 @@ Route::post('/logout', [SimpleAuthController::class, 'logout'])->name('logout');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [CentralDashboardController::class, 'index'])->name('dashboard');
+    
+    // User profile and settings
+    Route::get('/profile', function () {
+        return view('profile');
+    })->name('profile');
+    
+    Route::get('/settings', function () {
+        return view('settings');
+    })->name('settings');
 
     // Tenant management (central app)
     Route::get('/tenants', [\App\Http\Controllers\TenantController::class, 'index'])->name('tenants.index');

@@ -38,19 +38,36 @@
                         
                         <div class="row">
                             <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="password" class="form-label">Password</label>
-                                    <input type="password" class="form-control" id="password" name="password" required>
-                                    @error('password')
-                                        <div class="text-danger">{{ $message }}</div>
-                                    @enderror
+                                <div class="form-group">
+                                    <label class="form-label">Password</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-robot"></i>
+                                        </span>
+                                        <input type="text" class="form-control" name="password" 
+                                               value="AUTO-GENERATED" readonly placeholder="Password will be auto-generated and emailed">
+                                    </div>
+                                    <small class="form-text text-info">
+                                        <i class="fas fa-info-circle me-1"></i>
+                                        A secure password will be automatically generated and sent to your email address.
+                                    </small>
                                 </div>
                             </div>
                             
                             <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="password_confirmation" class="form-label">Confirm Password</label>
-                                    <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" required>
+                                <div class="form-group">
+                                    <label class="form-label">Confirm Password</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-envelope"></i>
+                                        </span>
+                                        <input type="text" class="form-control" name="password_confirmation" 
+                                               value="SENT VIA EMAIL" readonly placeholder="Password will be sent to your email">
+                                    </div>
+                                    <small class="form-text text-success">
+                                        <i class="fas fa-check-circle me-1"></i>
+                                        Check your email after account creation for your login credentials.
+                                    </small>
                                 </div>
                             </div>
                         </div>

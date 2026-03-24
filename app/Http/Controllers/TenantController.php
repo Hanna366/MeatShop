@@ -78,7 +78,13 @@ class TenantController extends Controller
         ]);
 
         return redirect()->route('tenants.show', $tenant->tenant_id)
-            ->with('success', 'Tenant created successfully.');
+            ->with('success', 'Tenant created successfully.')
+            ->with('notification', [
+                'type' => 'success',
+                'title' => '🎉 Tenant Created!',
+                'message' => 'New tenant "' . $tenant->business_name . '" has been created successfully.',
+                'timer' => 4000
+            ]);
     }
 
     public function updateStatus(Request $request, string $tenantId)
@@ -90,7 +96,7 @@ class TenantController extends Controller
         ]);
 
         $validated = $request->validate([
-            'status' => 'required|in:active,inactive,suspended,unpaid',
+            'status' => 'required|in:active,inactive,suspended,unpaid,archived',
             'payment_status' => 'nullable|in:paid,unpaid,overdue',
             'suspended_message' => 'nullable|string|max:500',
             'domain' => [
@@ -112,8 +118,16 @@ class TenantController extends Controller
             'business_address' => $validated['business_address'],
         ]);
 
+        $statusText = $validated['status'] === 'archived' ? 'archived' : 'updated';
+        
         return redirect()->route('tenants.show', $tenantId)
-            ->with('success', 'Tenant status updated.');
+            ->with('success', 'Tenant status ' . $statusText . '.')
+            ->with('notification', [
+                'type' => $validated['status'] === 'archived' ? 'info' : 'success',
+                'title' => $validated['status'] === 'archived' ? '📦 Tenant Archived!' : '✅ Status Updated!',
+                'message' => 'Tenant "' . $tenant->business_name . '" has been ' . $statusText . ' successfully.',
+                'timer' => 3000
+            ]);
     }
 
     private function normalizeDomain(?string $domain): ?string

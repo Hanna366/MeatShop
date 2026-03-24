@@ -66,6 +66,7 @@
                                 <option value="inactive" {{ ($tenant->status ?? '') === 'inactive' ? 'selected' : '' }}>Inactive</option>
                                 <option value="suspended" {{ ($tenant->status ?? '') === 'suspended' ? 'selected' : '' }}>Suspended</option>
                                 <option value="unpaid" {{ ($tenant->status ?? '') === 'unpaid' ? 'selected' : '' }}>Unpaid</option>
+                                <option value="archived" {{ ($tenant->status ?? '') === 'archived' ? 'selected' : '' }}>Archived</option>
                             </select>
                         </div>
                         <div class="mb-2">

@@ -1,8 +1,8 @@
-@extends('layouts.central')
 
-@section('title', 'Tenants - MeatShop POS')
 
-@section('content')
+<?php $__env->startSection('title', 'Tenants - MeatShop POS'); ?>
+
+<?php $__env->startSection('content'); ?>
 <div class="container-fluid">
     <!-- Page Header -->
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
@@ -11,7 +11,7 @@
             <p class="text-muted mb-0">Manage all your tenant accounts</p>
         </div>
         <div>
-            <a href="{{ route('tenants.create') }}" class="btn btn-primary">
+            <a href="<?php echo e(route('tenants.create')); ?>" class="btn btn-primary">
                 <i class="fas fa-plus-circle me-2"></i>Create New Tenant
             </a>
         </div>
@@ -105,16 +105,16 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse($tenants as $tenant)
+                        <?php $__empty_1 = true; $__currentLoopData = $tenants; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $tenant): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                             <tr>
                                 <td>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="tenant-index-{{ $tenant->id }}">
-                                        <label class="form-check-label" for="tenant-index-{{ $tenant->id }}"></label>
+                                        <input class="form-check-input" type="checkbox" id="tenant-index-<?php echo e($tenant->id); ?>">
+                                        <label class="form-check-label" for="tenant-index-<?php echo e($tenant->id); ?>"></label>
                                     </div>
                                 </td>
                                 <td>
-                                    <code class="text-primary">{{ $tenant->tenant_id }}</code>
+                                    <code class="text-primary"><?php echo e($tenant->tenant_id); ?></code>
                                 </td>
                                 <td>
                                     <div class="d-flex align-items-center">
@@ -122,9 +122,10 @@
                                             <i class="fas fa-building text-primary"></i>
                                         </div>
                                         <div>
-                                            <div class="fw-semibold">{{ $tenant->business_name }}</div>
+                                            <div class="fw-semibold"><?php echo e($tenant->business_name); ?></div>
                                             <small class="text-muted d-block">
-                                                <i class="fas fa-globe me-1"></i>{{ $tenant->domain ?? 'No domain' }}
+                                                <i class="fas fa-globe me-1"></i><?php echo e($tenant->domain ?? 'No domain'); ?>
+
                                             </small>
                                         </div>
                                     </div>
@@ -135,95 +136,99 @@
                                             <i class="fas fa-envelope text-success"></i>
                                         </div>
                                         <div>
-                                            <div class="fw-semibold">{{ $tenant->business_email }}</div>
-                                            @if($tenant->business_phone)
+                                            <div class="fw-semibold"><?php echo e($tenant->business_email); ?></div>
+                                            <?php if($tenant->business_phone): ?>
                                                 <small class="text-muted d-block">
-                                                    <i class="fas fa-phone me-1"></i>{{ $tenant->business_phone }}
+                                                    <i class="fas fa-phone me-1"></i><?php echo e($tenant->business_phone); ?>
+
                                                 </small>
-                                            @endif
+                                            <?php endif; ?>
                                         </div>
                                     </div>
                                 </td>
                                 <td>
                                     <div>
-                                        <div class="fw-semibold">{{ $tenant->business_address ?? 'No address provided' }}</div>
-                                        @if($tenant->business_address)
+                                        <div class="fw-semibold"><?php echo e($tenant->business_address ?? 'No address provided'); ?></div>
+                                        <?php if($tenant->business_address): ?>
                                             <small class="text-muted d-block">
                                                 <i class="fas fa-map-marker-alt me-1"></i>Complete address on file
                                             </small>
-                                        @else
+                                        <?php else: ?>
                                             <small class="text-muted d-block">
                                                 <i class="fas fa-exclamation-triangle me-1 text-warning"></i>No address provided
                                             </small>
-                                        @endif
+                                        <?php endif; ?>
                                     </div>
                                 </td>
                                 <td>
-                                    @if(empty($tenant->domain))
+                                    <?php if(empty($tenant->domain)): ?>
                                         <span class="text-muted">No domain</span>
-                                    @else
+                                    <?php else: ?>
                                         <div class="d-flex align-items-center">
-                                            <a href="#" onclick="accessTenantDomain('{{ $tenant->domain }}', '{{ $tenant->business_name }}')" class="text-primary text-decoration-none me-2" title="Access Tenant Login">
-                                                <i class="fas fa-external-link-alt me-1"></i>{{ $tenant->domain }}
+                                            <a href="#" onclick="accessTenantDomain('<?php echo e($tenant->domain); ?>', '<?php echo e($tenant->business_name); ?>')" class="text-primary text-decoration-none me-2" title="Access Tenant Login">
+                                                <i class="fas fa-external-link-alt me-1"></i><?php echo e($tenant->domain); ?>
+
                                             </a>
-                                            @if($tenant->status === 'active')
+                                            <?php if($tenant->status === 'active'): ?>
                                                 <span class="badge bg-success bg-opacity-10 text-success px-2 py-1">
                                                     <i class="fas fa-check-circle me-1"></i>Accessible
                                                 </span>
-                                            @else
+                                            <?php else: ?>
                                                 <span class="badge bg-warning bg-opacity-10 text-warning px-2 py-1">
                                                     <i class="fas fa-pause-circle me-1"></i>Inactive
                                                 </span>
-                                            @endif
+                                            <?php endif; ?>
                                         </div>
                                         <small class="text-muted d-block ms-3">
                                             <i class="fas fa-sign-in-alt me-1"></i>Click to access tenant login
                                         </small>
-                                    @endif
+                                    <?php endif; ?>
                                 </td>
                                 <td>
-                                    <span class="badge bg-{{ $tenant->plan === 'premium' ? 'danger' : ($tenant->plan === 'standard' ? 'warning' : 'primary') }} text-white px-3 py-2">
-                                        <i class="fas fa-crown me-1"></i>{{ ucfirst($tenant->plan ?? 'basic') }}
+                                    <span class="badge bg-<?php echo e($tenant->plan === 'premium' ? 'danger' : ($tenant->plan === 'standard' ? 'warning' : 'primary')); ?> text-white px-3 py-2">
+                                        <i class="fas fa-crown me-1"></i><?php echo e(ucfirst($tenant->plan ?? 'basic')); ?>
+
                                     </span>
                                 </td>
                                 <td>
-                                    <span class="badge bg-{{ $tenant->status === 'active' ? 'success' : ($tenant->status === 'suspended' ? 'danger' : ($tenant->status === 'archived' ? 'secondary' : 'warning')) }} text-white px-3 py-2">
-                                        <i class="fas fa-{{ $tenant->status === 'active' ? 'check' : ($tenant->status === 'suspended' ? 'times' : ($tenant->status === 'archived' ? 'archive' : 'question')) }}-circle me-1"></i>
-                                        {{ ucfirst($tenant->status ?? 'active') }}
+                                    <span class="badge bg-<?php echo e($tenant->status === 'active' ? 'success' : ($tenant->status === 'suspended' ? 'danger' : ($tenant->status === 'archived' ? 'secondary' : 'warning'))); ?> text-white px-3 py-2">
+                                        <i class="fas fa-<?php echo e($tenant->status === 'active' ? 'check' : ($tenant->status === 'suspended' ? 'times' : ($tenant->status === 'archived' ? 'archive' : 'question'))); ?>-circle me-1"></i>
+                                        <?php echo e(ucfirst($tenant->status ?? 'active')); ?>
+
                                     </span>
                                 </td>
                                 <td>
                                     <div>
-                                        <div class="fw-semibold">{{ $tenant->created_at ? $tenant->created_at->format('M d, Y') : '-' }}</div>
-                                        <small class="text-muted">{{ $tenant->created_at ? $tenant->created_at->diffForHumans() : '' }}</small>
+                                        <div class="fw-semibold"><?php echo e($tenant->created_at ? $tenant->created_at->format('M d, Y') : '-'); ?></div>
+                                        <small class="text-muted"><?php echo e($tenant->created_at ? $tenant->created_at->diffForHumans() : ''); ?></small>
                                     </div>
                                 </td>
                                 <td class="text-center">
                                     <div class="btn-group" role="group">
-                                        <a href="{{ route('tenants.show', $tenant->tenant_id) }}" class="btn btn-sm btn-outline-primary" title="View Details">
+                                        <a href="<?php echo e(route('tenants.show', $tenant->tenant_id)); ?>" class="btn btn-sm btn-outline-primary" title="View Details">
                                             <i class="fas fa-eye"></i>
                                         </a>
-                                        <a href="{{ route('tenants.show', $tenant->tenant_id) }}" class="btn btn-sm btn-outline-info" title="Edit">
+                                        <a href="<?php echo e(route('tenants.show', $tenant->tenant_id)); ?>" class="btn btn-sm btn-outline-info" title="Edit">
                                             <i class="fas fa-edit"></i>
                                         </a>
-                                        @if(!empty($tenant->domain) && $tenant->status === 'active')
-                                            <button class="btn btn-sm btn-outline-success" title="Access Tenant Login" onclick="accessTenantDomain('{{ $tenant->domain }}', '{{ $tenant->business_name }}')">
+                                        <?php if(!empty($tenant->domain) && $tenant->status === 'active'): ?>
+                                            <button class="btn btn-sm btn-outline-success" title="Access Tenant Login" onclick="accessTenantDomain('<?php echo e($tenant->domain); ?>', '<?php echo e($tenant->business_name); ?>')">
                                                 <i class="fas fa-sign-in-alt"></i>
                                             </button>
-                                        @endif
-                                        @if($tenant->status === 'archived')
-                                            <button class="btn btn-sm btn-outline-success" title="Restore" onclick="confirmRestore('{{ $tenant->tenant_id }}')">
+                                        <?php endif; ?>
+                                        <?php if($tenant->status === 'archived'): ?>
+                                            <button class="btn btn-sm btn-outline-success" title="Restore" onclick="confirmRestore('<?php echo e($tenant->tenant_id); ?>')">
                                                 <i class="fas fa-undo"></i>
                                             </button>
-                                        @else
-                                            <button class="btn btn-sm btn-outline-secondary" title="Archive" onclick="confirmArchive('{{ $tenant->tenant_id }}')">
+                                        <?php else: ?>
+                                            <button class="btn btn-sm btn-outline-secondary" title="Archive" onclick="confirmArchive('<?php echo e($tenant->tenant_id); ?>')">
                                                 <i class="fas fa-archive"></i>
                                             </button>
-                                        @endif
+                                        <?php endif; ?>
                                     </div>
                                 </td>
                             </tr>
-                        @empty
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                             <tr>
                                 <td colspan="9" class="text-center py-5">
                                     <div class="text-muted">
@@ -233,17 +238,17 @@
                                         <h5 class="text-muted mb-3">No Tenants Found</h5>
                                         <p class="text-muted mb-4">Start by creating your first tenant to begin managing your multi-tenant POS system.</p>
                                         <div>
-                                            <a href="{{ route('tenants.create') }}" class="btn btn-primary btn-lg me-2">
+                                            <a href="<?php echo e(route('tenants.create')); ?>" class="btn btn-primary btn-lg me-2">
                                                 <i class="fas fa-plus-circle me-2"></i>Create Your First Tenant
                                             </a>
-                                            <a href="{{ route('pricing') }}" class="btn btn-outline-secondary btn-lg">
+                                            <a href="<?php echo e(route('pricing')); ?>" class="btn btn-outline-secondary btn-lg">
                                                 <i class="fas fa-info-circle me-2"></i>View Plans
                                             </a>
                                         </div>
                                     </div>
                                 </td>
                             </tr>
-                        @endforelse
+                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>
@@ -560,4 +565,6 @@ document.querySelectorAll('tbody input[type="checkbox"]').forEach(checkbox => {
     checkbox.addEventListener('change', updateBulkActionsBar);
 });
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.central', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\Users\Rusty\Music\MeatShop\resources\views/tenants/index.blade.php ENDPATH**/ ?>

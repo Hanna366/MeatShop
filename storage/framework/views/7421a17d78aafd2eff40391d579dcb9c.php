@@ -1,8 +1,6 @@
-@extends('layouts.central')
+<?php $__env->startSection('title', 'Create New Tenant - MeatShop POS'); ?>
 
-@section('title', 'Create New Tenant - MeatShop POS')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="container-fluid">
     <!-- Page Header -->
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
@@ -11,7 +9,7 @@
             <p class="text-muted mb-0">Set up a new tenant account for your POS system</p>
         </div>
         <div>
-            <a href="{{ route('tenants.index') }}" class="btn btn-outline-secondary">
+            <a href="<?php echo e(route('tenants.index')); ?>" class="btn btn-outline-secondary">
                 <i class="fas fa-arrow-left me-2"></i>Back to Tenants
             </a>
         </div>
@@ -27,30 +25,30 @@
                     </h5>
                 </div>
                 <div class="card-body">
-                    @if ($errors->any())
+                    <?php if($errors->any()): ?>
                         <div class="alert alert-danger mb-4">
                             <h6 class="alert-heading">
                                 <i class="fas fa-exclamation-triangle me-2"></i>Please fix the following errors:
                             </h6>
                             <ul class="mb-0">
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
+                                <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <li><?php echo e($error); ?></li>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </ul>
                         </div>
-                    @endif
+                    <?php endif; ?>
 
-                    @if (session('success'))
+                    <?php if(session('success')): ?>
                         <div class="alert alert-success mb-4">
                             <h6 class="alert-heading">
                                 <i class="fas fa-check-circle me-2"></i>Success!
                             </h6>
-                            <p class="mb-0">{{ session('success') }}</p>
+                            <p class="mb-0"><?php echo e(session('success')); ?></p>
                         </div>
-                    @endif
+                    <?php endif; ?>
 
-                    <form action="{{ route('account.store') }}" method="POST" id="tenantForm">
-                        @csrf
+                    <form action="<?php echo e(route('account.store')); ?>" method="POST" id="tenantForm">
+                        <?php echo csrf_field(); ?>
                         
                         <div class="row g-4">
                             <!-- Account Information Section -->
@@ -70,11 +68,18 @@
                                             <i class="fas fa-user"></i>
                                         </span>
                                         <input type="text" class="form-control" id="name" name="name" 
-                                               value="{{ old('name') }}" placeholder="Enter full name" required>
+                                               value="<?php echo e(old('name')); ?>" placeholder="Enter full name" required>
                                     </div>
-                                    @error('name')
-                                        <div class="text-danger mt-1">{{ $message }}</div>
-                                    @enderror
+                                    <?php $__errorArgs = ['name'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <div class="text-danger mt-1"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 </div>
                             </div>
                             
@@ -88,11 +93,18 @@
                                             <i class="fas fa-envelope"></i>
                                         </span>
                                         <input type="email" class="form-control" id="email" name="email" 
-                                               value="{{ old('email') }}" placeholder="Enter email address" required>
+                                               value="<?php echo e(old('email')); ?>" placeholder="Enter email address" required>
                                     </div>
-                                    @error('email')
-                                        <div class="text-danger mt-1">{{ $message }}</div>
-                                    @enderror
+                                    <?php $__errorArgs = ['email'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <div class="text-danger mt-1"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 </div>
                             </div>
                             
@@ -151,11 +163,18 @@
                                             <i class="fas fa-building"></i>
                                         </span>
                                         <input type="text" class="form-control" id="company_name" name="company_name" 
-                                               value="{{ old('company_name') }}" placeholder="Enter business name">
+                                               value="<?php echo e(old('company_name')); ?>" placeholder="Enter business name">
                                     </div>
-                                    @error('company_name')
-                                        <div class="text-danger mt-1">{{ $message }}</div>
-                                    @enderror
+                                    <?php $__errorArgs = ['company_name'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <div class="text-danger mt-1"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 </div>
                             </div>
                             
@@ -169,11 +188,18 @@
                                             <i class="fas fa-phone"></i>
                                         </span>
                                         <input type="tel" class="form-control" id="business_phone" name="business_phone" 
-                                               value="{{ old('business_phone') }}" placeholder="Enter phone number">
+                                               value="<?php echo e(old('business_phone')); ?>" placeholder="Enter phone number">
                                     </div>
-                                    @error('business_phone')
-                                        <div class="text-danger mt-1">{{ $message }}</div>
-                                    @enderror
+                                    <?php $__errorArgs = ['business_phone'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <div class="text-danger mt-1"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 </div>
                             </div>
                             
@@ -183,11 +209,18 @@
                                         <i class="fas fa-map-marker-alt me-1"></i>Business Address
                                     </label>
                                     <textarea class="form-control" id="business_address" name="business_address" 
-                                              rows="3" placeholder="Enter complete business address (street, city, state, postal code)">{{ old('business_address') }}</textarea>
+                                              rows="3" placeholder="Enter complete business address (street, city, state, postal code)"><?php echo e(old('business_address')); ?></textarea>
                                     <small class="form-text text-muted">Include street, city, state, and postal code for accurate location tracking</small>
-                                    @error('business_address')
-                                        <div class="text-danger mt-1">{{ $message }}</div>
-                                    @enderror
+                                    <?php $__errorArgs = ['business_address'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <div class="text-danger mt-1"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 </div>
                             </div>
                             
@@ -202,14 +235,21 @@
                                         </span>
                                         <select class="form-select" id="plan" name="plan" required>
                                             <option value="">Select a plan</option>
-                                            <option value="basic" {{ old('plan') == 'basic' ? 'selected' : '' }}>Basic - Free</option>
-                                            <option value="standard" {{ old('plan') == 'standard' ? 'selected' : '' }}>Standard - $29/month</option>
-                                            <option value="premium" {{ old('plan') == 'premium' ? 'selected' : '' }}>Premium - $99/month</option>
+                                            <option value="basic" <?php echo e(old('plan') == 'basic' ? 'selected' : ''); ?>>Basic - Free</option>
+                                            <option value="standard" <?php echo e(old('plan') == 'standard' ? 'selected' : ''); ?>>Standard - $29/month</option>
+                                            <option value="premium" <?php echo e(old('plan') == 'premium' ? 'selected' : ''); ?>>Premium - $99/month</option>
                                         </select>
                                     </div>
-                                    @error('plan')
-                                        <div class="text-danger mt-1">{{ $message }}</div>
-                                    @enderror
+                                    <?php $__errorArgs = ['plan'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <div class="text-danger mt-1"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 </div>
                             </div>
                         </div>
@@ -226,7 +266,7 @@
                                 <button type="submit" class="btn btn-primary btn-lg me-2" onclick="showLoading()">
                                     <i class="fas fa-plus-circle me-2"></i>Create Tenant
                                 </button>
-                                <a href="{{ route('tenants.index') }}" class="btn btn-outline-secondary btn-lg">
+                                <a href="<?php echo e(route('tenants.index')); ?>" class="btn btn-outline-secondary btn-lg">
                                     <i class="fas fa-times-circle me-2"></i>Cancel
                                 </a>
                             </div>
@@ -434,4 +474,6 @@ document.getElementById('tenantForm')?.addEventListener('submit', function(e) {
     showLoading();
 });
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.central', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\Users\Rusty\Music\MeatShop\resources\views/tenants/create.blade.php ENDPATH**/ ?>
