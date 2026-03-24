@@ -18,11 +18,11 @@ class AccountController extends Controller
         $validationRules = [
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:8',
-            'business_name' => 'required|string|max:255',
+            'password' => 'required|string|min:8|confirmed',
+            'company_name' => 'nullable|string|max:255',
             'business_phone' => 'nullable|string|max:50',
             'business_address' => 'nullable|string|max:1000',
-            'plan' => 'required|in:basic,standard,premium,enterprise',
+            'plan' => 'required|in:basic,standard,premium',
         ];
 
         if ($recaptchaEnabled) {
@@ -68,7 +68,7 @@ class AccountController extends Controller
 
         // Create the tenant in the central system and prepare its database.
         $tenant = TenantService::createTenant([
-            'business_name' => $request->business_name,
+            'business_name' => $request->company_name ?: $request->name . "'s Business",
             'business_email' => $request->email,
             'business_phone' => $request->business_phone,
             'business_address' => $request->business_address,

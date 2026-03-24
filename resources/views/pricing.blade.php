@@ -1,4 +1,4 @@
-@extends('layouts.central')
+@extends('layouts.central_simple')
 
 @section('title', 'Pricing Plans - Meat Shop POS')
 

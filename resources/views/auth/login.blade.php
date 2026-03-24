@@ -87,21 +87,27 @@
             color: white;
         }
 
-        .btn-google {
-            border: 1px solid #dee2e6;
-            padding: 12px 20px;
-            font-size: 1rem;
-            border-radius: 10px;
-            width: 100%;
-            background: #fff;
-            color: #212529;
-            transition: all 0.3s;
+        .auth-divider {
+            text-align: center;
+            margin: 2rem 0;
+            position: relative;
         }
 
-        .btn-google:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-            color: #212529;
+        .auth-divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #dee2e6;
+        }
+
+        .auth-divider span {
+            background: #f8f9fa;
+            padding: 0 1rem;
+            color: #6c757d;
+            font-size: 0.9rem;
         }
 
         .auth-divider {
@@ -223,15 +229,6 @@
                 Sign In
             </button>
         </form>
-
-        @if (Route::has('google.redirect'))
-            <div class="auth-divider">or</div>
-
-            <a href="{{ route('google.redirect') }}" class="btn btn-google">
-                <i class="fab fa-google me-2 text-danger"></i>
-                Sign in with Google
-            </a>
-        @endif
     </div>
     
     <!-- Bootstrap JS -->

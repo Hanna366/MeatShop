@@ -24,7 +24,7 @@ use App\Http\Controllers\ApiController;
 |
 */
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum', 'tenant.auth', 'subscription'])->group(function () {
     
     // Authentication Routes
     Route::prefix('auth')->group(function () {

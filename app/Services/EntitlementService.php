@@ -17,7 +17,29 @@ class EntitlementService
             ];
         }
 
-        if (!SubscriptionService::isActive()) {
+        $tenantId = session('user.tenant_id') ?? auth()->user()->tenant_id ?? null;
+
+        if (!$tenantId) {
+            return [
+                'allowed' => false,
+                'redirect' => '/login',
+                'message' => 'Tenant context is missing. Please log in again.',
+            ];
+        }
+
+        $tenant = \App\Models\Tenant::where('tenant_id', $tenantId)->first();
+
+        if (!$tenant || in_array($tenant->status, ['inactive', 'suspended', 'unpaid'], true)) {
+            return [
+                'allowed' => false,
+                'redirect' => '/login',
+                'message' => 'Tenant is not active. Contact support.',
+            ];
+        }
+
+        $tenantSubscriptionStatus = strtolower($tenant->subscription['status'] ?? 'cancelled');
+
+        if (!in_array($tenantSubscriptionStatus, ['active', 'trial'], true)) {
             return [
                 'allowed' => false,
                 'redirect' => '/pricing',

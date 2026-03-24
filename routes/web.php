@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CentralDashboardController;
 use App\Http\Controllers\SimpleAuthController;
 use App\Http\Controllers\SubscriptionController;
-use App\Http\Controllers\TenantController;
+use App\Http\Controllers\AccountController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,38 +17,31 @@ use App\Http\Controllers\TenantController;
 |
 */
 
-Route::get('/', [CentralDashboardController::class, 'index'])->name('central.home');
-
-Route::get('/central', [CentralDashboardController::class, 'index'])->name('central.framework');
+Route::get('/', function () {
+    // If already authenticated, redirect to dashboard
+    if (session('authenticated')) {
+        return redirect('/dashboard');
+    }
+    // Otherwise show welcome page
+    return view('welcome');
+});
 
 Route::get('/login', [SimpleAuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [SimpleAuthController::class, 'login'])->name('login.post');
 Route::post('/logout', [SimpleAuthController::class, 'logout'])->name('logout');
-Route::get('/forgot-password', [SimpleAuthController::class, 'showForgotPasswordForm'])->name('password.request');
-Route::post('/forgot-password', [SimpleAuthController::class, 'sendResetLink'])->name('password.email');
-Route::get('/reset-password/{token}', [SimpleAuthController::class, 'showResetPasswordForm'])->name('password.reset');
-Route::post('/reset-password', [SimpleAuthController::class, 'resetPassword'])->name('password.update');
-
-// Public signup to create tenant from selected plan.
-Route::get('/account/create', [TenantController::class, 'create'])->name('tenants.create');
-Route::post('/account/create', [TenantController::class, 'store'])->name('tenants.store');
-
-// Central tenant management menu entries.
-Route::get('/tenants', [TenantController::class, 'index'])->name('tenants.index');
-Route::get('/tenant/{tenantId}', [TenantController::class, 'show'])->name('tenants.show');
-Route::post('/tenant/{tenantId}/status', [TenantController::class, 'updateStatus'])->name('tenants.updateStatus');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [CentralDashboardController::class, 'index'])->name('dashboard');
-});
 
-// Pricing page - accessible without authentication
-Route::get('/pricing', function () {
-    return view('pricing');
-})->name('pricing');
+    // Tenant management (central app)
+    Route::get('/tenants', [\App\Http\Controllers\TenantController::class, 'index'])->name('tenants.index');
+    Route::get('/tenant/{tenantId}', [\App\Http\Controllers\TenantController::class, 'show'])->name('tenants.show');
+    Route::get('/tenants/create', function () {
+        return view('tenants.create');
+    })->name('tenants.create');
+    Route::post('/tenant/{tenantId}/updateStatus', [\App\Http\Controllers\TenantController::class, 'updateStatus'])->name('tenants.updateStatus');
 
-// Subscription routes - require authentication
-Route::middleware(['auth'])->group(function () {
+    // Central subscription management routes for tenant admin
     Route::post('/subscription/process', [SubscriptionController::class, 'processSubscription'])->name('subscription.process');
     Route::post('/subscription/cancel', [SubscriptionController::class, 'cancel'])->name('subscription.cancel');
     Route::post('/subscription/renew', [SubscriptionController::class, 'renew'])->name('subscription.renew');
@@ -57,7 +50,16 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/subscription/settings', [SubscriptionController::class, 'updateSettings'])->name('subscription.settings');
 });
 
+Route::get('/pricing', function () {
+    return view('pricing');
+})->name('pricing');
+
 Route::get('/test', function () {
     return 'Laravel Meat Shop POS is working!';
 });
 
+Route::get('/account/create', function () {
+    return view('account.create');
+})->name('account.create');
+
+Route::post('/account/store', [AccountController::class, 'store'])->name('account.store');

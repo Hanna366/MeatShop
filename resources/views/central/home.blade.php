@@ -3,112 +3,78 @@
 @section('title', 'MeatShop Central')
 
 @section('content')
-<div class="container-fluid">
-    <div class="d-flex justify-content-between align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">MeatShop Central</h1>
+<div class="container">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h1>MeatShop Central</h1>
         <a href="{{ route('tenants.create') }}" class="btn btn-primary">Create Tenant</a>
     </div>
 
-    <div class="row g-3 mb-4">
-        <div class="col-md-3">
-            <div class="card shadow-sm border-0 h-100">
-                <div class="card-body">
-                    <p class="text-muted mb-1">Total Tenants</p>
-                    <h3 class="mb-0">{{ $stats['total_tenants'] ?? 0 }}</h3>
-                </div>
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem;">
+        <div class="card">
+            <div>
+                <p style="color: #666; margin: 0 0 0.5rem 0;">Total Tenants</p>
+                <h3 style="margin: 0;">{{ $stats['total_tenants'] ?? 0 }}</h3>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card shadow-sm border-0 h-100 border-start border-4 border-success">
-                <div class="card-body">
-                    <p class="text-muted mb-1">Active Tenants</p>
-                    <h3 class="mb-0 text-success">{{ $stats['active_tenants'] ?? 0 }}</h3>
-                </div>
+        <div class="card" style="border-left: 4px solid #28a745;">
+            <div>
+                <p style="color: #666; margin: 0 0 0.5rem 0;">Active Tenants</p>
+                <h3 style="margin: 0; color: #28a745;">{{ $stats['active_tenants'] ?? 0 }}</h3>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card shadow-sm border-0 h-100 border-start border-4 border-warning">
-                <div class="card-body">
-                    <p class="text-muted mb-1">Suspended Tenants</p>
-                    <h3 class="mb-0 text-warning">{{ $stats['suspended_tenants'] ?? 0 }}</h3>
-                </div>
+        <div class="card" style="border-left: 4px solid #ffc107;">
+            <div>
+                <p style="color: #666; margin: 0 0 0.5rem 0;">Suspended Tenants</p>
+                <h3 style="margin: 0; color: #ffc107;">{{ $stats['suspended_tenants'] ?? 0 }}</h3>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card shadow-sm border-0 h-100 border-start border-4 border-danger">
-                <div class="card-body">
-                    <p class="text-muted mb-1">Unpaid Tenants</p>
-                    <h3 class="mb-0 text-danger">{{ $stats['unpaid_tenants'] ?? 0 }}</h3>
-                </div>
+        <div class="card" style="border-left: 4px solid #dc3545;">
+            <div>
+                <p style="color: #666; margin: 0 0 0.5rem 0;">Unpaid Tenants</p>
+                <h3 style="margin: 0; color: #dc3545;">{{ $stats['unpaid_tenants'] ?? 0 }}</h3>
             </div>
         </div>
     </div>
 
-    <div class="card shadow mb-4">
-        <div class="card-body">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="mb-0">Tenant Table</h5>
-                <a href="{{ route('tenants.index') }}" class="btn btn-outline-primary btn-sm">Open Full Table</a>
-            </div>
-
-            <div class="table-responsive">
-                <table class="table table-bordered" width="100%" cellspacing="0">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Domain</th>
-                            <th>Address</th>
-                            <th>Administrator</th>
-                            <th>Admin Email</th>
-                            <th>Pricing Model</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($tenants as $tenant)
-                            <tr>
-                                <td>{{ $tenant->business_name }}</td>
-                                <td>
-                                    @if(!empty($tenant->domain))
-                                        @php
-                                            $rawDomain = trim((string) $tenant->domain);
-                                            $normalizedDomain = preg_replace('#^https?://#i', '', $rawDomain);
-                                            $normalizedDomain = rtrim($normalizedDomain, '/');
-                                            $normalizedDomain = str_ireplace('locasthost', 'localhost', $normalizedDomain);
-                                            $scheme = request()->isSecure() ? 'https' : 'http';
-                                            $hasPort = preg_match('/:\\d+$/', $normalizedDomain) === 1;
-                                            $tenantPort = app()->environment('local') && !$hasPort ? ':8000' : '';
-                                            $tenantUrl = $scheme . '://' . $normalizedDomain . $tenantPort;
-                                        @endphp
-                                        <a href="{{ $tenantUrl }}" target="_blank" rel="noopener noreferrer">{{ $normalizedDomain }}</a>
-                                    @else
-                                        <span class="text-muted">-</span>
-                                    @endif
-                                </td>
-                                <td>{{ is_array($tenant->business_address) ? implode(', ', $tenant->business_address) : ($tenant->business_address ?: '—') }}</td>
-                                <td>{{ $tenant->admin_name ?? '—' }}</td>
-                                <td>{{ $tenant->admin_email ?? $tenant->business_email }}</td>
-                                <td>{{ ucfirst($tenant->plan ?? 'basic') }}</td>
-                                <td>
-                                    <a href="{{ route('tenants.show', $tenant->tenant_id) }}" class="btn btn-sm btn-outline-primary">Customize</a>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="7" class="text-center text-muted">No tenants yet. Create your first tenant.</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <div class="card shadow-sm">
-        <div class="card-body">
-            <p class="mb-1"><strong>Tenant host format:</strong> ramcar.localhost:8000</p>
-            <p class="mb-0 text-muted">Run: php artisan serve --host=127.0.0.1 --port=8000</p>
-        </div>
+    <div class="card">
+        <h3 style="margin-bottom: 1rem;">Recent Tenants</h3>
+        
+        @forelse($tenants as $tenant)
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Business Name</th>
+                        <th>Email</th>
+                        <th>Plan</th>
+                        <th>Status</th>
+                        <th>Created</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($tenants as $tenant)
+                    <tr>
+                        <td>{{ $tenant->business_name }}</td>
+                        <td>{{ $tenant->business_email }}</td>
+                        <td>{{ ucfirst($tenant->plan ?? 'basic') }}</td>
+                        <td>
+                            <span style="padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.875rem; 
+                                   background: {{ $tenant->status === 'active' ? '#d4edda' : ($tenant->status === 'suspended' ? '#f8d7da' : '#fff3cd') }}; 
+                                   color: {{ $tenant->status === 'active' ? '#155724' : ($tenant->status === 'suspended' ? '#721c24' : '#856404') }};">
+                                {{ ucfirst($tenant->status ?? 'active') }}
+                            </span>
+                        </td>
+                        <td>{{ $tenant->created_at ? $tenant->created_at->format('M d, Y') : '-' }}</td>
+                        <td>
+                            <a href="{{ route('tenants.show', $tenant->tenant_id) }}" class="btn btn-primary" style="font-size: 0.875rem; padding: 0.25rem 0.5rem;">Manage</a>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        @empty
+            <p>No tenants found. <a href="{{ route('tenants.create') }}">Create your first tenant</a>.</p>
+        @endforelse
     </div>
 </div>
 @endsection

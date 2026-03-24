@@ -1,4 +1,4 @@
-@extends('layouts.central')
+@extends('layouts.central_simple')
 
 @section('content')
 <div class="container-fluid">
@@ -54,6 +54,10 @@
                         <div class="mb-2">
                             <label class="form-label">Domain</label>
                             <input type="text" name="domain" class="form-control" value="{{ $tenant->domain }}" placeholder="ramcar.localhost">
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label">Business Address</label>
+                            <textarea name="business_address" class="form-control" rows="2" placeholder="Enter business address">{{ $tenant->business_address }}</textarea>
                         </div>
                         <div class="mb-2">
                             <label class="form-label">Status</label>

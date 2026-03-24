@@ -99,6 +99,7 @@ class TenantController extends Controller
                 'max:255',
                 Rule::unique('tenants', 'domain')->ignore($tenant->id)->whereNull('deleted_at'),
             ],
+            'business_address' => 'nullable|string|max:1000',
         ]);
 
         $domain = $validated['domain'] ?? null;
@@ -108,6 +109,7 @@ class TenantController extends Controller
             'payment_status' => $validated['payment_status'] ?? ($validated['status'] === 'unpaid' ? 'unpaid' : 'paid'),
             'suspended_message' => $validated['suspended_message'] ?? 'Please contact your administrator.',
             'domain' => $domain,
+            'business_address' => $validated['business_address'],
         ]);
 
         return redirect()->route('tenants.show', $tenantId)
