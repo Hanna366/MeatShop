@@ -11,6 +11,10 @@ class TenantController extends Controller
 {
     public function index(Request $request)
     {
+        if (!session('authenticated')) {
+            return redirect('/login');
+        }
+
         // This is a central management screen, so it should always show all tenants.
         $tenants = Tenant::orderBy('created_at', 'desc')->get();
 
@@ -21,6 +25,10 @@ class TenantController extends Controller
 
     public function show(string $tenantId)
     {
+        if (!session('authenticated')) {
+            return redirect('/login');
+        }
+
         $tenant = Tenant::where('tenant_id', $tenantId)->firstOrFail();
 
         return view('tenants.show', [

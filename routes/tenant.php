@@ -28,38 +28,62 @@ Route::middleware([
             : redirect('/login');
     })->name('tenant.home');
 
-    Route::middleware(['auth'])->group(function () {
+    Route::middleware([])->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('tenant.dashboard');
 
         Route::get('/products', function () {
+            if (!session('authenticated')) {
+                return redirect('/login');
+            }
             return view('products');
         })->middleware('subscription')->name('tenant.products');
 
         Route::get('/inventory', function () {
+            if (!session('authenticated')) {
+                return redirect('/login');
+            }
             return view('inventory');
         })->middleware('subscription')->name('tenant.inventory');
 
         Route::get('/sales', function () {
+            if (!session('authenticated')) {
+                return redirect('/login');
+            }
             return view('sales');
         })->middleware('subscription:pos_access')->name('tenant.sales');
 
         Route::get('/customers', function () {
+            if (!session('authenticated')) {
+                return redirect('/login');
+            }
             return view('customers');
         })->middleware('subscription:customer_management')->name('tenant.customers');
 
         Route::get('/suppliers', function () {
+            if (!session('authenticated')) {
+                return redirect('/login');
+            }
             return view('suppliers');
         })->middleware('subscription:supplier_management')->name('tenant.suppliers');
 
         Route::get('/reports', function () {
+            if (!session('authenticated')) {
+                return redirect('/login');
+            }
             return view('reports');
         })->middleware('subscription:advanced_analytics')->name('tenant.reports');
 
         Route::get('/settings', function () {
+            if (!session('authenticated')) {
+                return redirect('/login');
+            }
             return view('settings');
         })->middleware('subscription:custom_branding')->name('tenant.settings');
 
         Route::get('/profile', function () {
+            if (!session('authenticated')) {
+                return redirect('/login');
+            }
             return view('profile');
         })->name('tenant.profile');
     });

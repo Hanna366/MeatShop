@@ -8,6 +8,9 @@ class CentralDashboardController extends Controller
 {
     public function index()
     {
+        if (!session('authenticated')) {
+            return redirect('/login');
+        }
         $stats = [
             'total_tenants' => Tenant::count(),
             'active_tenants' => Tenant::where('status', 'active')->count(),
