@@ -1,8 +1,8 @@
-@extends('layouts.central_simple')
 
-@section('title', 'Pricing Plans - MeatShop POS')
 
-@section('content')
+<?php $__env->startSection('title', 'Pricing Plans - MeatShop POS'); ?>
+
+<?php $__env->startSection('content'); ?>
 <div class="container-fluid">
     <!-- Modern Header -->
     <div class="text-center mb-5">
@@ -38,7 +38,7 @@
                     </ul>
                     
                     <div class="d-grid">
-                        <a href="{{ route('account.create') }}?plan=basic" class="btn btn-outline-primary btn-lg">
+                        <a href="<?php echo e(route('account.create')); ?>?plan=basic" class="btn btn-outline-primary btn-lg">
                             Get Started
                         </a>
                     </div>
@@ -74,7 +74,7 @@
                     </ul>
                     
                     <div class="d-grid">
-                        <a href="{{ route('account.create') }}?plan=standard" class="btn btn-warning btn-lg">
+                        <a href="<?php echo e(route('account.create')); ?>?plan=standard" class="btn btn-warning btn-lg">
                             Get Started
                         </a>
                     </div>
@@ -105,7 +105,7 @@
                     </ul>
                     
                     <div class="d-grid">
-                        <a href="{{ route('account.create') }}?plan=premium" class="btn btn-danger btn-lg">
+                        <a href="<?php echo e(route('account.create')); ?>?plan=premium" class="btn btn-danger btn-lg">
                             Get Started
                         </a>
                     </div>
@@ -230,7 +230,7 @@
             <h3 class="fw-bold mb-3">Ready to get started?</h3>
             <p class="mb-4">Join thousands of businesses using MeatShop POS today</p>
             <div class="d-flex justify-content-center gap-3">
-                <a href="{{ route('account.create') }}" class="btn btn-light btn-lg">
+                <a href="<?php echo e(route('account.create')); ?>" class="btn btn-light btn-lg">
                     <i class="fas fa-rocket me-2"></i>Start Free Trial
                 </a>
                 <a href="/tenants" class="btn btn-outline-light btn-lg">
@@ -266,4 +266,6 @@
 }
 </style>
 
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.central_simple', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\Users\Rusty\Music\MeatShop\resources\views/pricing.blade.php ENDPATH**/ ?>

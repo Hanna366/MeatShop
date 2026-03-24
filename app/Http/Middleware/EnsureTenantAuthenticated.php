@@ -11,9 +11,19 @@ class EnsureTenantAuthenticated
 {
     public function handle(Request $request, Closure $next)
     {
-        $user = $request->user() ?? Auth::user();
+        // Check session-based authentication first (for tenant context)
         $sessionUser = session('user', []);
-
+        
+        // Then check request-based authentication
+        $user = null;
+        if ($request->hasHeader('Authorization')) {
+            try {
+                $user = $request->user();
+            } catch (\Exception $e) {
+                // Auth guard not available, continue with session check
+            }
+        }
+        
         if (!$user && empty($sessionUser)) {
             return redirect('/login');
         }

@@ -4,16 +4,114 @@
 
 @section('content')
 <div class="container-fluid">
-    <!-- Page Header -->
-    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <!-- Modern Page Header -->
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-4 pb-3 mb-4">
         <div>
-            <h1 class="h2 mb-0">Tenants</h1>
-            <p class="text-muted mb-0">Manage all your tenant accounts</p>
+            <div class="d-flex align-items-center mb-2">
+                <div class="bg-gradient-primary text-white rounded-circle p-3 me-3">
+                    <i class="fas fa-building fa-lg"></i>
+                </div>
+                <div>
+                    <h1 class="h2 mb-0 fw-bold">Tenants</h1>
+                    <p class="text-muted mb-0">Manage all your tenant accounts</p>
+                </div>
+            </div>
         </div>
         <div>
-            <a href="{{ route('tenants.create') }}" class="btn btn-primary">
+            <div class="btn-group">
+                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                    <i class="fas fa-filter me-2"></i>Filter
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#" onclick="filterTenants('all')">
+                        <i class="fas fa-globe me-2"></i>All Tenants</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="filterTenants('active')">
+                        <i class="fas fa-check-circle me-2 text-success"></i>Active</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="filterTenants('suspended')">
+                        <i class="fas fa-pause-circle me-2 text-warning"></i>Suspended</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="filterTenants('archived')">
+                        <i class="fas fa-archive me-2 text-secondary"></i>Archived</a></li>
+                </ul>
+            </div>
+            <a href="{{ route('tenants.create') }}" class="btn btn-primary ms-2">
                 <i class="fas fa-plus-circle me-2"></i>Create New Tenant
             </a>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm bg-gradient-primary">
+                <div class="card-body text-white">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h6 class="text-uppercase mb-2 fw-bold">Total Tenants</h6>
+                            <div class="h3 mb-0 fw-bold">{{ $tenants->count() }}</div>
+                            <small class="opacity-75">All registered tenants</small>
+                        </div>
+                        <div class="ms-3">
+                            <div class="bg-white bg-opacity-25 rounded-circle p-3">
+                                <i class="fas fa-building fa-lg"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm bg-gradient-success">
+                <div class="card-body text-white">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h6 class="text-uppercase mb-2 fw-bold">Active</h6>
+                            <div class="h3 mb-0 fw-bold">{{ $tenants->where('status', 'active')->count() }}</div>
+                            <small class="opacity-75">Currently active</small>
+                        </div>
+                        <div class="ms-3">
+                            <div class="bg-white bg-opacity-25 rounded-circle p-3">
+                                <i class="fas fa-check-circle fa-lg"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm bg-gradient-warning">
+                <div class="card-body text-white">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h6 class="text-uppercase mb-2 fw-bold">Suspended</h6>
+                            <div class="h3 mb-0 fw-bold">{{ $tenants->where('status', 'suspended')->count() }}</div>
+                            <small class="opacity-75">Temporarily suspended</small>
+                        </div>
+                        <div class="ms-3">
+                            <div class="bg-white bg-opacity-25 rounded-circle p-3">
+                                <i class="fas fa-pause-circle fa-lg"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm bg-gradient-info">
+                <div class="card-body text-white">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h6 class="text-uppercase mb-2 fw-bold">Premium</h6>
+                            <div class="h3 mb-0 fw-bold">{{ $tenants->where('plan', 'premium')->count() }}</div>
+                            <small class="opacity-75">Premium plan users</small>
+                        </div>
+                        <div class="ms-3">
+                            <div class="bg-white bg-opacity-25 rounded-circle p-3">
+                                <i class="fas fa-crown fa-lg"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -50,33 +148,29 @@
         </div>
     </div>
 
-    <!-- Tenants Table -->
-    <div class="card shadow-lg">
-        <div class="card-header bg-white border-0 py-3">
+    <!-- Modern Tenants Table -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white border-bottom-0">
             <div class="d-flex justify-content-between align-items-center">
-                <h5 class="card-title mb-0">
-                    <i class="fas fa-building me-2"></i>All Tenants
-                </h5>
-                <div>
-                    <div class="input-group me-2">
-                        <input type="text" class="form-control" placeholder="Search tenants..." id="searchInput">
-                        <button class="btn btn-outline-secondary" type="button" onclick="searchTenants()">
-                            <i class="fas fa-search"></i>
-                        </button>
+                <h5 class="mb-0 fw-bold">All Tenants</h5>
+                <div class="d-flex align-items-center">
+                    <div class="input-group me-3" style="width: 300px;">
+                        <span class="input-group-text bg-white border-end-0">
+                            <i class="fas fa-search text-muted"></i>
+                        </span>
+                        <input type="text" class="form-control border-start-0" placeholder="Search tenants..." id="searchInput">
                     </div>
-                    <button class="btn btn-sm btn-outline-primary me-2" onclick="window.location.reload()">
-                        <i class="fas fa-sync-alt"></i> Refresh
-                    </button>
                     <div class="btn-group">
-                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-filter"></i> Filter
+                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-download me-1"></i>Export
                         </button>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#" onclick="filterTenants('all')">All Tenants</a></li>
-                            <li><a class="dropdown-item" href="#" onclick="filterTenants('active')">Active Only</a></li>
-                            <li><a class="dropdown-item" href="#" onclick="filterTenants('suspended')">Suspended Only</a></li>
-                            <li><a class="dropdown-item" href="#" onclick="filterTenants('unpaid')">Unpaid Only</a></li>
-                            <li><a class="dropdown-item" href="#" onclick="filterTenants('archived')">Archived Only</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="exportData('csv')">
+                                <i class="fas fa-file-csv me-2"></i>Export as CSV</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="exportData('excel')">
+                                <i class="fas fa-file-excel me-2"></i>Export as Excel</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="exportData('pdf')">
+                                <i class="fas fa-file-pdf me-2"></i>Export as PDF</a></li>
                         </ul>
                     </div>
                 </div>
@@ -84,24 +178,23 @@
         </div>
         <div class="card-body p-0">
             <div class="table-responsive">
-                <table class="table table-hover mb-0" id="tenantsTable">
-                    <thead class="table-light">
+                <table class="table table-hover mb-0">
+                    <thead class="bg-light">
                         <tr>
-                            <th class="border-0">
+                            <th width="40">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="selectAllTenants">
-                                    <label class="form-check-label" for="selectAllTenants"></label>
+                                    <input class="form-check-input" type="checkbox" id="selectAll">
+                                    <label class="form-check-label" for="selectAll"></label>
                                 </div>
                             </th>
-                            <th>Tenant ID</th>
-                            <th>Business Name</th>
-                            <th>Contact Information</th>
-                            <th>Address</th>
-                            <th>Domain</th>
-                            <th>Plan</th>
-                            <th>Status</th>
-                            <th>Created</th>
-                            <th class="text-center">Actions</th>
+                            <th width="120">Tenant ID</th>
+                            <th>Business</th>
+                            <th>Contact</th>
+                            <th width="200">Domain</th>
+                            <th width="100">Plan</th>
+                            <th width="100">Status</th>
+                            <th width="120">Created</th>
+                            <th width="120" class="text-center">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
