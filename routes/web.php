@@ -41,7 +41,7 @@ Route::post('/tenant/{tenantId}/status', [TenantController::class, 'updateStatus
 Route::post('/tenant/{tenantId}/subscription', [TenantController::class, 'updateSubscription'])->name('tenants.updateSubscription');
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard', [CentralDashboardController::class, 'index'])->name('dashboard');
+    // Route::get('/dashboard', [CentralDashboardController::class, 'index'])->name('central.dashboard');
 });
 
 // Subscription routes - require authentication
