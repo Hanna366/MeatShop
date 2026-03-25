@@ -1,329 +1,187 @@
-@extends('layouts.central_simple')
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>Create Your MeatShop Account</title>
 
-@section('title', 'Create Account - Meat Shop POS')
+    @if (config('services.recaptcha.site_key'))
+        <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    @endif
 
-@section('content')
-<div class="container-fluid">
-    <div class="row justify-content-center">
-        <div class="col-lg-10">
-            <!-- Modern Header -->
-            <div class="text-center mb-5">
-                <div class="bg-gradient-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
-                    <i class="fas fa-store fa-2x"></i>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background:
+                radial-gradient(circle at 8% -5%, rgba(30, 58, 138, 0.12) 0, transparent 30%),
+                radial-gradient(circle at 100% 0%, rgba(13, 148, 136, 0.12) 0, transparent 26%),
+                #f8fafc;
+        }
+
+        .heading-font {
+            font-family: 'Poppins', sans-serif;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-900 antialiased">
+    @php($selectedPlan = old('plan', request('plan', 'basic')))
+
+    <main class="mx-auto flex min-h-screen w-full max-w-6xl items-center p-4 sm:p-6 lg:p-8">
+        <div class="grid w-full grid-cols-1 gap-6 lg:grid-cols-2">
+            <section class="hidden rounded-2xl border border-slate-200/70 bg-white/80 p-8 shadow-sm backdrop-blur lg:block">
+                <div class="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-100 text-indigo-700">
+                    <i data-lucide="store" class="h-6 w-6"></i>
                 </div>
-                <h1 class="h2 fw-bold mb-3">Create Your POS Account</h1>
-                <p class="text-muted lead">Join thousands of businesses using MeatShop POS for efficient inventory management</p>
-            </div>
+                <h1 class="heading-font text-3xl font-semibold leading-tight text-slate-900">Create Your MeatShop Account</h1>
+                <p class="mt-2 text-sm text-slate-600">Set up your business and start managing your shop with centralized SaaS controls.</p>
 
-            <!-- Modern Form Card -->
-            <div class="card border-0 shadow-lg">
-                <div class="card-body p-5">
-                    <!-- Progress Steps -->
-                    <div class="d-flex justify-content-center mb-5">
-                        <div class="d-flex align-items-center">
-                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                                <i class="fas fa-user"></i>
+                <div class="mt-8 space-y-4 text-sm text-slate-600">
+                    <div class="flex items-start gap-3">
+                        <span class="mt-0.5 inline-flex h-6 w-6 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
+                            <i data-lucide="check" class="h-4 w-4"></i>
+                        </span>
+                        <p>Provision tenant database and domain automatically.</p>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="mt-0.5 inline-flex h-6 w-6 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
+                            <i data-lucide="check" class="h-4 w-4"></i>
+                        </span>
+                        <p>Assign initial plan and activate onboarding in minutes.</p>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="mt-0.5 inline-flex h-6 w-6 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
+                            <i data-lucide="check" class="h-4 w-4"></i>
+                        </span>
+                        <p>Use central controls for lifecycle, billing, and notifications.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="rounded-2xl border border-slate-200/70 bg-white p-6 shadow-md sm:p-8">
+                <div class="mb-6 text-center lg:text-left">
+                    <div class="mx-auto mb-3 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-100 text-indigo-700 lg:mx-0">
+                        <i data-lucide="building-2" class="h-5 w-5"></i>
+                    </div>
+                    <h2 class="heading-font text-2xl font-semibold text-slate-900">Create Your MeatShop Account</h2>
+                    <p class="mt-1 text-sm text-slate-500">Set up your business and start managing your shop.</p>
+                </div>
+
+                @if ($errors->any())
+                    <div class="mb-5 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+                        <ul class="list-disc space-y-1 pl-5">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
+                <form id="tenantSignupForm" action="{{ route('tenants.store') }}" method="POST" class="space-y-6">
+                    @csrf
+
+                    <div class="rounded-xl border border-slate-200 bg-slate-50/70 p-4">
+                        <h3 class="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-700">Personal Info</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label for="name" class="mb-1 block text-sm font-medium text-slate-700">Name</label>
+                                <input type="text" id="name" name="name" value="{{ old('name') }}" placeholder="Juan Dela Cruz" class="h-11 w-full rounded-lg border border-slate-300 bg-white px-4 text-sm text-slate-700 outline-none ring-indigo-200 transition focus:border-indigo-500 focus:ring-2 @error('name') border-rose-300 ring-rose-200 @enderror" required>
+                                <p class="mt-1 text-xs text-slate-500">Primary contact for this onboarding request.</p>
                             </div>
-                            <div class="flex-grow-1 px-3">
-                                <div class="progress" style="height: 4px;">
-                                    <div class="progress-bar bg-primary" style="width: 33%;"></div>
-                                </div>
-                            </div>
-                            <div class="bg-light text-muted rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                                <i class="fas fa-building"></i>
-                            </div>
-                            <div class="flex-grow-1 px-3">
-                                <div class="progress" style="height: 4px;">
-                                    <div class="progress-bar bg-light" style="width: 0%;"></div>
-                                </div>
-                            </div>
-                            <div class="bg-light text-muted rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                                <i class="fas fa-crown"></i>
+                            <div>
+                                <label for="business_email" class="mb-1 block text-sm font-medium text-slate-700">Business Email</label>
+                                <input type="email" id="business_email" name="business_email" value="{{ old('business_email', old('email')) }}" placeholder="owner@yourshop.com" class="h-11 w-full rounded-lg border border-slate-300 bg-white px-4 text-sm text-slate-700 outline-none ring-indigo-200 transition focus:border-indigo-500 focus:ring-2 @error('business_email') border-rose-300 ring-rose-200 @enderror" required>
                             </div>
                         </div>
                     </div>
 
-                    <form action="{{ route('account.store') }}" method="POST" id="createAccountForm">
-                        @csrf
-                        
-                        <!-- Personal Information Section -->
-                        <div class="mb-5">
-                            <h5 class="fw-bold mb-4">
-                                <i class="fas fa-user me-2 text-primary"></i>Personal Information
-                            </h5>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="name" class="form-label fw-semibold">Full Name</label>
-                                        <div class="input-group">
-                                            <span class="input-group-text bg-light border-end-0">
-                                                <i class="fas fa-user text-muted"></i>
-                                            </span>
-                                            <input type="text" class="form-control border-start-0" id="name" name="name" value="{{ old('name') }}" placeholder="Enter your full name" required>
-                                        </div>
-                                        @error('name')
-                                            <div class="text-danger mt-1"><i class="fas fa-exclamation-circle me-1"></i>{{ $message }}</div>
-                                        @enderror
-                                    </div>
+                    <div class="rounded-xl border border-slate-200 bg-slate-50/70 p-4">
+                        <h3 class="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-700">Business Info</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label for="business_name" class="mb-1 block text-sm font-medium text-slate-700">Business Name</label>
+                                <input type="text" id="business_name" name="business_name" value="{{ old('business_name') }}" placeholder="MeatShop Downtown" class="h-11 w-full rounded-lg border border-slate-300 bg-white px-4 text-sm text-slate-700 outline-none ring-indigo-200 transition focus:border-indigo-500 focus:ring-2 @error('business_name') border-rose-300 ring-rose-200 @enderror" required>
+                            </div>
+                            <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                                <div>
+                                    <label for="business_phone" class="mb-1 block text-sm font-medium text-slate-700">Business Phone</label>
+                                    <input type="text" id="business_phone" name="business_phone" value="{{ old('business_phone') }}" placeholder="0917 000 0000" class="h-11 w-full rounded-lg border border-slate-300 bg-white px-4 text-sm text-slate-700 outline-none ring-indigo-200 transition focus:border-indigo-500 focus:ring-2 @error('business_phone') border-rose-300 ring-rose-200 @enderror">
                                 </div>
-                                
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="email" class="form-label fw-semibold">Email Address</label>
-                                        <div class="input-group">
-                                            <span class="input-group-text bg-light border-end-0">
-                                                <i class="fas fa-envelope text-muted"></i>
-                                            </span>
-                                            <input type="email" class="form-control border-start-0" id="email" name="email" value="{{ old('email') }}" placeholder="your.email@example.com" required>
-                                        </div>
-                                        @error('email')
-                                            <div class="text-danger mt-1"><i class="fas fa-exclamation-circle me-1"></i>{{ $message }}</div>
-                                        @enderror
-                                    </div>
+                                <div>
+                                    <label for="domain" class="mb-1 block text-sm font-medium text-slate-700">Domain / Subdomain</label>
+                                    <input type="text" id="domain" name="domain" placeholder="ramcar.localhost" value="{{ old('domain') }}" class="h-11 w-full rounded-lg border border-slate-300 bg-white px-4 text-sm text-slate-700 outline-none ring-indigo-200 transition focus:border-indigo-500 focus:ring-2 @error('domain') border-rose-300 ring-rose-200 @enderror">
                                 </div>
                             </div>
+                            <div>
+                                <label for="business_address" class="mb-1 block text-sm font-medium text-slate-700">Business Address</label>
+                                <input type="text" id="business_address" name="business_address" value="{{ old('business_address') }}" placeholder="Street, Barangay, City" class="h-11 w-full rounded-lg border border-slate-300 bg-white px-4 text-sm text-slate-700 outline-none ring-indigo-200 transition focus:border-indigo-500 focus:ring-2 @error('business_address') border-rose-300 ring-rose-200 @enderror">
+                            </div>
                         </div>
+                    </div>
 
-                        <!-- Business Information Section -->
-                        <div class="mb-5">
-                            <h5 class="fw-bold mb-4">
-                                <i class="fas fa-building me-2 text-primary"></i>Business Information
-                            </h5>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="company_name" class="form-label fw-semibold">Business Name</label>
-                                        <div class="input-group">
-                                            <span class="input-group-text bg-light border-end-0">
-                                                <i class="fas fa-store text-muted"></i>
-                                            </span>
-                                            <input type="text" class="form-control border-start-0" id="company_name" name="company_name" value="{{ old('company_name') }}" placeholder="Your business name">
-                                        </div>
-                                        @error('company_name')
-                                            <div class="text-danger mt-1"><i class="fas fa-exclamation-circle me-1"></i>{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-                                
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="business_phone" class="form-label fw-semibold">Phone Number</label>
-                                        <div class="input-group">
-                                            <span class="input-group-text bg-light border-end-0">
-                                                <i class="fas fa-phone text-muted"></i>
-                                            </span>
-                                            <input type="tel" class="form-control border-start-0" id="business_phone" name="business_phone" value="{{ old('business_phone') }}" placeholder="+1 (555) 123-4567">
-                                        </div>
-                                        @error('business_phone')
-                                            <div class="text-danger mt-1"><i class="fas fa-exclamation-circle me-1"></i>{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
+                    <div class="rounded-xl border border-slate-200 bg-slate-50/70 p-4">
+                        <h3 class="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-700">Admin Account</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label for="admin_name" class="mb-1 block text-sm font-medium text-slate-700">Administrator Name</label>
+                                <input type="text" id="admin_name" name="admin_name" value="{{ old('admin_name', old('name')) }}" placeholder="Store Administrator" class="h-11 w-full rounded-lg border border-slate-300 bg-white px-4 text-sm text-slate-700 outline-none ring-indigo-200 transition focus:border-indigo-500 focus:ring-2 @error('admin_name') border-rose-300 ring-rose-200 @enderror" required>
                             </div>
-                            
-                            <div class="row">
-                                <div class="col-12">
-                                    <div class="mb-3">
-                                        <label for="business_address" class="form-label fw-semibold">Business Address</label>
-                                        <div class="input-group">
-                                            <span class="input-group-text bg-light border-end-0">
-                                                <i class="fas fa-map-marker-alt text-muted"></i>
-                                            </span>
-                                            <textarea class="form-control border-start-0" id="business_address" name="business_address" rows="2" placeholder="123 Main St, City, State 12345">{{ old('business_address') }}</textarea>
-                                        </div>
-                                        @error('business_address')
-                                            <div class="text-danger mt-1"><i class="fas fa-exclamation-circle me-1"></i>{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
+                            <div>
+                                <label for="admin_email" class="mb-1 block text-sm font-medium text-slate-700">Administrator Email</label>
+                                <input type="email" id="admin_email" name="admin_email" value="{{ old('admin_email', old('business_email', old('email'))) }}" placeholder="admin@yourshop.com" class="h-11 w-full rounded-lg border border-slate-300 bg-white px-4 text-sm text-slate-700 outline-none ring-indigo-200 transition focus:border-indigo-500 focus:ring-2 @error('admin_email') border-rose-300 ring-rose-200 @enderror" required>
+                            </div>
+                            <div>
+                                <label for="password" class="mb-1 block text-sm font-medium text-slate-700">Password</label>
+                                <input type="password" id="password" name="password" placeholder="Create a secure password" class="h-11 w-full rounded-lg border border-slate-300 bg-white px-4 text-sm text-slate-700 outline-none ring-indigo-200 transition focus:border-indigo-500 focus:ring-2 @error('password') border-rose-300 ring-rose-200 @enderror" required>
+                                <p class="mt-1 text-xs text-slate-500">Minimum 8 characters recommended.</p>
                             </div>
                         </div>
+                    </div>
 
-                        <!-- Plan Selection Section -->
-                        <div class="mb-5">
-                            <h5 class="fw-bold mb-4">
-                                <i class="fas fa-crown me-2 text-primary"></i>Choose Your Plan
-                            </h5>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="card border-2 h-100 plan-card" data-plan="basic">
-                                        <div class="card-body text-center p-4">
-                                            <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
-                                                <i class="fas fa-rocket fa-lg text-primary"></i>
-                                            </div>
-                                            <h6 class="fw-bold">Basic</h6>
-                                            <div class="h4 fw-bold text-primary mb-2">$29<span class="text-muted fw-normal">/mo</span></div>
-                                            <ul class="list-unstyled small text-start mb-4">
-                                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Up to 100 products</li>
-                                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Basic reporting</li>
-                                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Email support</li>
-                                            </ul>
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="plan" id="plan_basic" value="basic" checked>
-                                                <label class="form-check-label" for="plan_basic">Select Basic</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="col-md-4">
-                                    <div class="card border-2 h-100 plan-card" data-plan="standard">
-                                        <div class="card-body text-center p-4">
-                                            <div class="bg-warning bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
-                                                <i class="fas fa-star fa-lg text-warning"></i>
-                                            </div>
-                                            <h6 class="fw-bold">Standard</h6>
-                                            <div class="h4 fw-bold text-warning mb-2">$59<span class="text-muted fw-normal">/mo</span></div>
-                                            <ul class="list-unstyled small text-start mb-4">
-                                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Up to 500 products</li>
-                                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Advanced reporting</li>
-                                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Priority support</li>
-                                            </ul>
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="plan" id="plan_standard" value="standard">
-                                                <label class="form-check-label" for="plan_standard">Select Standard</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="col-md-4">
-                                    <div class="card border-2 h-100 plan-card" data-plan="premium">
-                                        <div class="card-body text-center p-4">
-                                            <div class="bg-danger bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
-                                                <i class="fas fa-crown fa-lg text-danger"></i>
-                                            </div>
-                                            <h6 class="fw-bold">Premium</h6>
-                                            <div class="h4 fw-bold text-danger mb-2">$99<span class="text-muted fw-normal">/mo</span></div>
-                                            <ul class="list-unstyled small text-start mb-4">
-                                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Unlimited products</li>
-                                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Custom reports</li>
-                                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>24/7 phone support</li>
-                                            </ul>
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="plan" id="plan_premium" value="premium">
-                                                <label class="form-check-label" for="plan_premium">Select Premium</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="rounded-xl border border-slate-200 bg-slate-50/70 p-4">
+                        <h3 class="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-700">Initial Plan</h3>
+                        <select id="plan" name="plan" class="h-11 w-full rounded-lg border border-slate-300 bg-white px-4 text-sm text-slate-700 outline-none ring-indigo-200 transition focus:border-indigo-500 focus:ring-2 @error('plan') border-rose-300 ring-rose-200 @enderror" required>
+                            <option value="basic" {{ $selectedPlan === 'basic' ? 'selected' : '' }}>Basic</option>
+                            <option value="standard" {{ $selectedPlan === 'standard' ? 'selected' : '' }}>Standard</option>
+                            <option value="premium" {{ $selectedPlan === 'premium' ? 'selected' : '' }}>Premium</option>
+                            <option value="enterprise" {{ $selectedPlan === 'enterprise' ? 'selected' : '' }}>Enterprise</option>
+                        </select>
+                    </div>
 
-                        <!-- Auto-Password Section -->
-                        <div class="mb-5">
-                            <div class="alert alert-info border-0 bg-info bg-opacity-10">
-                                <div class="d-flex align-items-center">
-                                    <div class="bg-info bg-opacity-25 rounded-circle p-2 me-3">
-                                        <i class="fas fa-robot text-info"></i>
-                                    </div>
-                                    <div class="flex-grow-1">
-                                        <h6 class="mb-1 fw-bold">Password Will Be Auto-Generated</h6>
-                                        <p class="mb-0 text-muted">A secure password will be automatically generated and sent to your email address after account creation.</p>
-                                    </div>
-                                </div>
-                            </div>
+                    @if (config('services.recaptcha.site_key'))
+                        <div class="flex justify-center">
+                            <div class="g-recaptcha" data-sitekey="{{ config('services.recaptcha.site_key') }}"></div>
                         </div>
+                    @endif
 
-                        <!-- reCAPTCHA -->
-                        <div class="mb-4">
-                            <div class="text-center">
-                                <div class="g-recaptcha" data-sitekey="{{ config('services.recaptcha.site_key') }}"></div>
-                            </div>
-                            @error('g-recaptcha-response')
-                                <div class="text-danger text-center mt-2"><i class="fas fa-exclamation-circle me-1"></i>{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <!-- Submit Button -->
-                        <div class="text-center">
-                            <button type="submit" class="btn btn-primary btn-lg px-5" id="submitBtn">
-                                <i class="fas fa-rocket me-2"></i>Create Account
-                            </button>
-                            <p class="text-muted mt-3 mb-0">
-                                <small>By creating an account, you agree to our <a href="#" class="text-primary">Terms of Service</a> and <a href="#" class="text-primary">Privacy Policy</a></small>
-                            </p>
-                        </div>
-                    </form>
-                </div>
-            </div>
+                    <button id="submitButton" type="submit" class="inline-flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-indigo-700 to-teal-600 px-4 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-70">
+                        <i data-lucide="user-plus" class="h-4 w-4"></i>
+                        <span id="submitLabel">Create Tenant</span>
+                    </button>
+                </form>
+            </section>
         </div>
-    </div>
-</div>
+    </main>
 
-<style>
-.plan-card {
-    transition: all 0.3s ease;
-    cursor: pointer;
-}
+    <script>
+        if (window.lucide) {
+            window.lucide.createIcons();
+        }
 
-.plan-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-}
+        const signupForm = document.getElementById('tenantSignupForm');
+        const submitButton = document.getElementById('submitButton');
+        const submitLabel = document.getElementById('submitLabel');
 
-.plan-card.selected {
-    border-color: #0d6efd !important;
-    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
-}
-
-.input-group-text {
-    border-right: none;
-}
-
-.form-control.border-start-0 {
-    border-left: none;
-}
-
-.form-control:focus {
-    border-color: #0d6efd;
-    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
-}
-</style>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Plan card selection
-    const planCards = document.querySelectorAll('.plan-card');
-    const planRadios = document.querySelectorAll('input[name="plan"]');
-    
-    planCards.forEach(card => {
-        card.addEventListener('click', function() {
-            const plan = this.dataset.plan;
-            const radio = document.getElementById('plan_' + plan);
-            
-            // Remove selected class from all cards
-            planCards.forEach(c => c.classList.remove('selected'));
-            
-            // Add selected class to clicked card
-            this.classList.add('selected');
-            
-            // Check the radio button
-            radio.checked = true;
+        signupForm?.addEventListener('submit', function () {
+            submitButton.disabled = true;
+            submitLabel.textContent = 'Creating Account...';
         });
-    });
-    
-    // Set initial selected state
-    const basicRadio = document.getElementById('plan_basic');
-    if (basicRadio && basicRadio.checked) {
-        document.querySelector('[data-plan="basic"]').classList.add('selected');
-    }
-    
-    // Form validation
-    const form = document.getElementById('createAccountForm');
-    const submitBtn = document.getElementById('submitBtn');
-    
-    form.addEventListener('submit', function(e) {
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Creating Account...';
-        
-        // Re-enable after 10 seconds in case of issues
-        setTimeout(() => {
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = '<i class="fas fa-rocket me-2"></i>Create Account';
-        }, 10000);
-    });
-});
-</script>
-
-@endsection
+    </script>
+</body>
+</html>

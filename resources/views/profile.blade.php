@@ -1,524 +1,98 @@
-@extends('layouts.central')
+@extends('layouts.tenant')
 
-@section('title', 'My Profile - MeatShop POS')
+@section('title', 'Profile - Meat Shop POS')
+@section('page_title', 'Profile')
+@section('page_subtitle', 'Manage account details, security preferences, and subscription status')
+
+@section('header_actions')
+    <button type="button" onclick="editProfile()" class="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50">
+        <i data-lucide="pencil" class="h-4 w-4"></i>
+        Edit Profile
+    </button>
+@endsection
 
 @section('content')
-<div class="container-fluid">
-    <!-- Page Header -->
-    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <div>
-            <h1 class="h2 mb-0">My Profile</h1>
-            <p class="text-muted mb-0">Manage your personal account information</p>
-        </div>
-        <div>
-            <button class="btn btn-primary" onclick="saveProfile()">
-                <i class="fas fa-save me-2"></i>Save Changes
-            </button>
-        </div>
-    </div>
+<section class="grid gap-6 lg:grid-cols-12">
+    <aside class="space-y-6 lg:col-span-4">
+        <section class="rounded-3xl border border-white/70 bg-white/90 p-6 text-center shadow-card">
+            <img src="https://ui-avatars.com/api/?name={{ urlencode(session('user.name', 'Owner User')) }}&background=1e40af&color=fff" alt="Profile Avatar" class="mx-auto mb-4 h-24 w-24 rounded-full border-4 border-white shadow">
+            <h2 class="heading-font text-xl font-semibold text-slate-900">{{ session('user.name', 'Owner User') }}</h2>
+            <p class="text-sm text-slate-500">{{ session('user.email', 'owner@meatshop.com') }}</p>
+            <span class="mt-3 inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold {{ session('user.plan') == 'Premium' ? 'bg-rose-100 text-rose-700' : (session('user.plan') == 'Standard' ? 'bg-amber-100 text-amber-700' : 'bg-indigo-100 text-indigo-700') }}">
+                <i data-lucide="crown" class="h-3.5 w-3.5"></i>
+                {{ session('user.plan', 'Basic') }} Plan
+            </span>
+        </section>
 
-    <div class="row">
-        <!-- Profile Information -->
-        <div class="col-lg-6">
-            <div class="card shadow-lg">
-                <div class="card-header bg-white border-0 py-3">
-                    <h5 class="card-title mb-0">
-                        <i class="fas fa-user me-2"></i>Profile Information
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <form id="profileForm">
-                        @csrf
-                        <div class="row g-4">
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label for="name" class="form-label">
-                                        <i class="fas fa-user me-1"></i>Full Name
-                                    </label>
-                                    <div class="input-group">
-                                        <span class="input-group-text">
-                                            <i class="fas fa-user"></i>
-                                        </span>
-                                        <input type="text" class="form-control" id="name" name="name" 
-                                               value="{{ session('user.name') ?? 'John Doe' }}" placeholder="Enter your full name">
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label for="email" class="form-label">
-                                        <i class="fas fa-envelope me-1"></i>Email Address
-                                    </label>
-                                    <div class="input-group">
-                                        <span class="input-group-text">
-                                            <i class="fas fa-envelope"></i>
-                                        </span>
-                                        <input type="email" class="form-control" id="email" name="email" 
-                                               value="{{ session('user.email') ?? 'john@example.com' }}" placeholder="Enter your email">
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label for="phone" class="form-label">
-                                        <i class="fas fa-phone me-1"></i>Phone Number
-                                    </label>
-                                    <div class="input-group">
-                                        <span class="input-group-text">
-                                            <i class="fas fa-phone"></i>
-                                        </span>
-                                        <input type="tel" class="form-control" id="phone" name="phone" 
-                                               value="{{ session('user.phone') ?? '' }}" placeholder="Enter your phone number">
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label for="role" class="form-label">
-                                        <i class="fas fa-user-tag me-1"></i>Role
-                                    </label>
-                                    <div class="input-group">
-                                        <span class="input-group-text">
-                                            <i class="fas fa-user-tag"></i>
-                                        </span>
-                                        <select class="form-select" id="role" name="role">
-                                            <option value="admin" {{ (session('user.role') ?? 'admin') == 'admin' ? 'selected' : '' }}>Administrator</option>
-                                            <option value="manager" {{ (session('user.role') ?? 'admin') == 'manager' ? 'selected' : '' }}>Manager</option>
-                                            <option value="user" {{ (session('user.role') ?? 'admin') == 'user' ? 'selected' : '' }}>User</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="col-12">
-                                <div class="form-group mb-3">
-                                    <label for="bio" class="form-label">
-                                        <i class="fas fa-info-circle me-1"></i>Bio
-                                    </label>
-                                    <textarea class="form-control" id="bio" name="bio" rows="3" 
-                                              placeholder="Tell us about yourself">{{ session('user.bio') ?? '' }}</textarea>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
+        <section class="rounded-3xl border border-white/70 bg-white/90 p-5 shadow-card">
+            <h3 class="mb-4 text-base font-semibold text-slate-900">Account Stats</h3>
+            <div class="grid grid-cols-2 gap-3 text-center">
+                <div class="rounded-2xl bg-slate-50 p-3"><p class="text-2xl font-bold text-slate-900">247</p><p class="text-xs text-slate-500">Sales</p></div>
+                <div class="rounded-2xl bg-slate-50 p-3"><p class="text-2xl font-bold text-slate-900">156</p><p class="text-xs text-slate-500">Products</p></div>
+                <div class="rounded-2xl bg-slate-50 p-3"><p class="text-2xl font-bold text-slate-900">89</p><p class="text-xs text-slate-500">Customers</p></div>
+                <div class="rounded-2xl bg-slate-50 p-3"><p class="text-2xl font-bold text-slate-900">12</p><p class="text-xs text-slate-500">Suppliers</p></div>
+            </div>
+        </section>
+    </aside>
+
+    <div class="space-y-6 lg:col-span-8">
+        <section class="rounded-3xl border border-white/70 bg-white/90 p-5 shadow-card sm:p-6">
+            <h3 class="heading-font mb-4 text-lg font-semibold text-slate-900">Profile Information</h3>
+            <div class="grid gap-4 md:grid-cols-2">
+                <div><p class="text-xs uppercase tracking-wide text-slate-500">Full Name</p><p class="mt-1 font-medium text-slate-800">{{ session('user.name', 'Owner User') }}</p></div>
+                <div><p class="text-xs uppercase tracking-wide text-slate-500">Email</p><p class="mt-1 font-medium text-slate-800">{{ session('user.email', 'owner@meatshop.com') }}</p></div>
+                <div><p class="text-xs uppercase tracking-wide text-slate-500">Phone</p><p class="mt-1 font-medium text-slate-800">+63 912 345 6789</p></div>
+                <div><p class="text-xs uppercase tracking-wide text-slate-500">Role</p><p class="mt-1 font-medium text-slate-800">Administrator</p></div>
+                <div><p class="text-xs uppercase tracking-wide text-slate-500">Department</p><p class="mt-1 font-medium text-slate-800">Management</p></div>
+                <div><p class="text-xs uppercase tracking-wide text-slate-500">Location</p><p class="mt-1 font-medium text-slate-800">Manila, Philippines</p></div>
+            </div>
+        </section>
+
+        <section class="rounded-3xl border border-white/70 bg-white/90 p-5 shadow-card sm:p-6">
+            <h3 class="heading-font mb-4 text-lg font-semibold text-slate-900">Subscription</h3>
+            <div class="grid gap-4 md:grid-cols-2">
+                <div><p class="text-xs uppercase tracking-wide text-slate-500">Current Plan</p><p class="mt-1 font-medium text-slate-800">Premium - PHP 8,300/month</p></div>
+                <div><p class="text-xs uppercase tracking-wide text-slate-500">Next Billing Date</p><p class="mt-1 font-medium text-slate-800">March 20, 2026</p></div>
+                <div><p class="text-xs uppercase tracking-wide text-slate-500">Account Status</p><p class="mt-1"><span class="rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-semibold text-emerald-700">Active</span></p></div>
+                <div><p class="text-xs uppercase tracking-wide text-slate-500">Member Since</p><p class="mt-1 font-medium text-slate-800">January 15, 2026</p></div>
+            </div>
+            <div class="mt-4 flex flex-wrap gap-2">
+                <a href="/pricing" class="rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800">Upgrade Plan</a>
+                <button type="button" onclick="viewBilling()" class="rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700">Billing History</button>
+            </div>
+        </section>
+
+        <section class="rounded-3xl border border-white/70 bg-white/90 p-5 shadow-card sm:p-6">
+            <h3 class="heading-font mb-4 text-lg font-semibold text-slate-900">Security</h3>
+            <div class="grid gap-4 md:grid-cols-2">
+                <div><p class="text-xs uppercase tracking-wide text-slate-500">Last Login</p><p class="mt-1 font-medium text-slate-800">{{ now()->format('F j, Y g:i A') }}</p></div>
+                <div>
+                    <p class="text-xs uppercase tracking-wide text-slate-500">Two-Factor Authentication</p>
+                    <label class="mt-2 inline-flex items-center gap-2 text-sm text-slate-700"><input type="checkbox" id="twoFactor" class="rounded border-slate-300"> Enable 2FA</label>
                 </div>
             </div>
-        </div>
-
-        <!-- Account Activity -->
-        <div class="col-lg-6">
-            <div class="card shadow-lg">
-                <div class="card-header bg-white border-0 py-3">
-                    <h5 class="card-title mb-0">
-                        <i class="fas fa-clock me-2"></i>Recent Activity
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <div class="timeline">
-                        <div class="timeline-item">
-                            <div class="timeline-marker bg-success">
-                                <i class="fas fa-check"></i>
-                            </div>
-                            <div class="timeline-content">
-                                <h6 class="mb-1">Logged in</h6>
-                                <p class="text-muted mb-0">{{ now()->format('M d, Y H:i') }}</p>
-                            </div>
-                        </div>
-                        
-                        <div class="timeline-item">
-                            <div class="timeline-marker bg-primary">
-                                <i class="fas fa-building"></i>
-                            </div>
-                            <div class="timeline-content">
-                                <h6 class="mb-1">Created tenant</h6>
-                                <p class="text-muted mb-0">{{ now()->subDays(7)->format('M d, Y H:i') }}</p>
-                            </div>
-                        </div>
-                        
-                        <div class="timeline-item">
-                            <div class="timeline-marker bg-warning">
-                                <i class="fas fa-edit"></i>
-                            </div>
-                            <div class="timeline-content">
-                                <h6 class="mb-1">Updated profile</h6>
-                                <p class="text-muted mb-0">{{ now()->subDays(14)->format('M d, Y H:i') }}</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="mt-4 flex flex-wrap gap-2">
+                <button type="button" onclick="changePassword()" class="rounded-xl border border-amber-300 bg-amber-50 px-4 py-2 text-sm font-semibold text-amber-700">Change Password</button>
+                <button type="button" onclick="viewLoginHistory()" class="rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700">Login History</button>
             </div>
-        </div>
+        </section>
     </div>
-</div>
-
-<style>
-.timeline {
-    position: relative;
-    padding-left: 2rem;
-}
-.timeline-item {
-    position: relative;
-    margin-bottom: 2rem;
-}
-.timeline-marker {
-    position: absolute;
-    left: -2.5rem;
-    top: 0;
-    width: 2rem;
-    height: 2rem;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 0.8rem;
-}
-.timeline-content {
-    background: #f8f9fa;
-    padding: 1rem;
-    border-radius: 0.5rem;
-    border-left: 3px solid #007bff;
-}
-.timeline-content h6 {
-    color: #495057;
-    font-weight: 600;
-}
-</style>
-
-<script>
-function saveProfile() {
-    Swal.fire({
-        title: 'Profile Updated!',
-        text: 'Your profile information has been successfully saved.',
-        icon: 'success',
-        confirmButtonText: 'Great!'
-    });
-}
-</script>
+</section>
 @endsection
-                <button class="btn btn-primary" onclick="editProfile()">
-                    <i class="fas fa-edit me-2"></i>Edit Profile
-                </button>
-            </div>
-        </div>
-    </div>
 
-    <div class="row">
-        <!-- Profile Information -->
-        <div class="col-md-4">
-            <div class="card border-primary">
-                <div class="card-body text-center">
-                    <div class="mb-3">
-                        <img src="https://ui-avatars.com/api/?name={{ session('user.name') }}&background=random&color=fff" 
-                             class="rounded-circle" 
-                             style="width: 100px; height: 100px; border: 3px solid #007bff;" 
-                             alt="Profile Picture">
-                    </div>
-                    <h4 class="card-title">{{ session('user.name') }}</h4>
-                    <p class="text-muted mb-1">{{ session('user.email') }}</p>
-                    <span class="badge bg-{{ session('user.plan') == 'Premium' ? 'danger' : (session('user.plan') == 'Standard' ? 'warning' : 'primary') }} text-white mb-2">
-                        <i class="fas fa-crown me-1"></i>
-                        {{ session('user.plan') }} Plan
-                    </span>
-                </div>
-            </div>
-
-            <!-- Account Stats -->
-            <div class="card mt-3">
-                <div class="card-body">
-                    <h6 class="card-title">Account Statistics</h6>
-                    <div class="row text-center">
-                        <div class="col-6">
-                            <div class="border-end">
-                                <h4 class="mb-1">247</h4>
-                                <small class="text-muted">Sales</small>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <h4 class="mb-1">156</h4>
-                            <small class="text-muted">Products</small>
-                        </div>
-                    </div>
-                    <div class="row text-center mt-3">
-                        <div class="col-6">
-                            <div class="border-end">
-                                <h4 class="mb-1">89</h4>
-                                <small class="text-muted">Customers</small>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <h4 class="mb-1">12</h4>
-                            <small class="text-muted">Suppliers</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Profile Details -->
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">Profile Information</h5>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">Full Name</label>
-                                <input type="text" class="form-control" value="Admin User" readonly>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">Email Address</label>
-                                <input type="email" class="form-control" value="{{ session('email') }}" readonly>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">Phone Number</label>
-                                <input type="tel" class="form-control" value="+63 912 345 6789" readonly>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">Role</label>
-                                <input type="text" class="form-control" value="Administrator" readonly>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">Department</label>
-                                <input type="text" class="form-control" value="Management" readonly>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">Location</label>
-                                <input type="text" class="form-control" value="Manila, Philippines" readonly>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Subscription Details -->
-            <div class="card mt-3">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">Subscription Details</h5>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">Current Plan</label>
-                                <div class="d-flex align-items-center">
-                                    <span class="badge bg-success me-2">Premium</span>
-                                    <span class="text-muted">$149/month</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">Next Billing Date</label>
-                                <p class="mb-0">March 20, 2026</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">Account Status</label>
-                                <span class="badge bg-success">Active</span>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">Member Since</label>
-                                <p class="mb-0">January 15, 2026</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="d-flex gap-2">
-                        <button class="btn btn-outline-primary" onclick="window.location.href='/pricing'">
-                            <i class="fas fa-rocket me-2"></i>Upgrade Plan
-                        </button>
-                        <button class="btn btn-outline-secondary" onclick="viewBilling()">
-                            <i class="fas fa-file-invoice me-2"></i>View Billing History
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Security Settings -->
-            <div class="card mt-3">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">Security Settings</h5>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">Last Login</label>
-                                <p class="mb-0">{{ now()->format('F j, Y g:i A') }}</p>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">Two-Factor Authentication</label>
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" id="twoFactor">
-                                    <label class="form-check-label" for="twoFactor">
-                                        Enable 2FA
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="d-flex gap-2">
-                        <button class="btn btn-outline-warning" onclick="changePassword()">
-                            <i class="fas fa-key me-2"></i>Change Password
-                        </button>
-                        <button class="btn btn-outline-info" onclick="viewLoginHistory()">
-                            <i class="fas fa-history me-2"></i>Login History
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Edit Profile Modal -->
-<div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="editProfileForm">
-                    <div class="mb-3">
-                        <label class="form-label">Full Name</label>
-                        <input type="text" class="form-control" id="editName" value="Admin User">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Email Address</label>
-                        <input type="email" class="form-control" id="editEmail" value="{{ session('email') }}">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Phone Number</label>
-                        <input type="tel" class="form-control" id="editPhone" value="+63 912 345 6789">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Location</label>
-                        <input type="text" class="form-control" id="editLocation" value="Manila, Philippines">
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" onclick="saveProfile()">Save Changes</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Change Password Modal -->
-<div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="changePasswordModalLabel">Change Password</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="changePasswordForm">
-                    <div class="mb-3">
-                        <label class="form-label">Current Password</label>
-                        <input type="password" class="form-control" id="currentPassword" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">New Password</label>
-                        <input type="password" class="form-control" id="newPassword" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Confirm New Password</label>
-                        <input type="password" class="form-control" id="confirmPassword" required>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-warning" onclick="savePassword()">Change Password</button>
-            </div>
-        </div>
-    </div>
-</div>
-
+@push('scripts')
 <script>
-function editProfile() {
-    const modal = new bootstrap.Modal(document.getElementById('editProfileModal'));
-    modal.show();
-}
-
-function saveProfile() {
-    // Simulate saving profile
-    const modal = bootstrap.Modal.getInstance(document.getElementById('editProfileModal'));
-    modal.hide();
-    showNotification('Profile updated successfully!', 'success');
-}
-
-function changePassword() {
-    const modal = new bootstrap.Modal(document.getElementById('changePasswordModal'));
-    modal.show();
-}
-
-function savePassword() {
-    const newPassword = document.getElementById('newPassword').value;
-    const confirmPassword = document.getElementById('confirmPassword').value;
-    
-    if (newPassword !== confirmPassword) {
-        showNotification('Passwords do not match!', 'danger');
+function toast(message, icon = 'success') {
+    if (window.Swal) {
+        Swal.fire({ toast: true, position: 'top-end', timer: 2300, showConfirmButton: false, icon, title: message });
         return;
     }
-    
-    // Simulate password change
-    const modal = bootstrap.Modal.getInstance(document.getElementById('changePasswordModal'));
-    modal.hide();
-    showNotification('Password changed successfully!', 'success');
+    alert(message);
 }
 
-function viewBilling() {
-    showNotification('Billing history feature coming soon!', 'info');
-}
-
-function viewLoginHistory() {
-    showNotification('Login history feature coming soon!', 'info');
-}
-
-function showNotification(message, type) {
-    const notification = document.createElement('div');
-    notification.className = `alert alert-${type} position-fixed top-0 end-0 m-3`;
-    notification.style.zIndex = '9999';
-    notification.innerHTML = `
-        <i class="fas fa-${type === 'success' ? 'check-circle' : 'info-circle'} me-2"></i>
-        ${message}
-    `;
-    document.body.appendChild(notification);
-    
-    setTimeout(() => {
-        notification.remove();
-    }, 3000);
-}
+function editProfile() { toast('Profile editor is coming next.', 'info'); }
+function changePassword() { toast('Password change flow is coming next.', 'info'); }
+function viewBilling() { toast('Billing history feature coming soon.', 'info'); }
+function viewLoginHistory() { toast('Login history feature coming soon.', 'info'); }
 </script>
-@endsection
+@endpush
