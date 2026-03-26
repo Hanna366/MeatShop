@@ -54,6 +54,7 @@ class Kernel extends HttpKernel
         'auth' => \App\Http\Middleware\Authenticate::class,
         'tenant.auth' => \App\Http\Middleware\EnsureTenantAuthenticated::class,
         'subscription' => \App\Http\Middleware\CheckSubscription::class,
+        'plan' => \App\Http\Middleware\CheckPlanRestrictions::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'auth.session' => \Illuminate\Session\Middleware\AuthenticateSession::class,
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,

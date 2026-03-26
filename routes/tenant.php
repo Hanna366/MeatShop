@@ -29,36 +29,65 @@ Route::middleware([
     Route::middleware(['tenant.auth'])->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('tenant.dashboard');
 
+        // Basic Plan Features (Available to all)
         Route::get('/products', function () {
             return view('products');
-        })->middleware('subscription')->name('tenant.products');
+        })->name('tenant.products');
 
         Route::get('/inventory', function () {
             return view('inventory');
-        })->middleware('subscription')->name('tenant.inventory');
+        })->name('tenant.inventory');
 
         Route::get('/sales', function () {
             return view('sales');
-        })->middleware('subscription:pos_access')->name('tenant.sales');
-
-        Route::get('/customers', function () {
-            return view('customers');
-        })->middleware('subscription:customer_management')->name('tenant.customers');
-
-        Route::get('/suppliers', function () {
-            return view('suppliers');
-        })->middleware('subscription:supplier_management')->name('tenant.suppliers');
-
-        Route::get('/reports', function () {
-            return view('reports');
-        })->middleware('subscription:advanced_analytics')->name('tenant.reports');
-
-        Route::get('/settings', function () {
-            return view('settings');
-        })->middleware('subscription:custom_branding')->name('tenant.settings');
+        })->name('tenant.sales');
 
         Route::get('/profile', function () {
             return view('profile');
         })->name('tenant.profile');
+
+        // Standard Plan Features (Require Standard or higher)
+        Route::get('/customers', function () {
+            return view('customers');
+        })->middleware('plan:standard')->name('tenant.customers');
+
+        Route::get('/suppliers', function () {
+            return view('suppliers');
+        })->middleware('plan:standard')->name('tenant.suppliers');
+
+        Route::get('/reports', function () {
+            return view('reports');
+        })->middleware('plan:standard')->name('tenant.reports');
+
+        // Premium Plan Features (Require Premium or higher)
+        Route::get('/analytics', function () {
+            return view('analytics');
+        })->middleware('plan:premium')->name('tenant.analytics');
+
+        Route::get('/employees', function () {
+            return view('employees');
+        })->middleware('plan:premium')->name('tenant.employees');
+
+        Route::get('/payroll', function () {
+            return view('payroll');
+        })->middleware('plan:premium')->name('tenant.payroll');
+
+        // Enterprise Plan Features (Require Enterprise)
+        Route::get('/multi-store', function () {
+            return view('multi-store');
+        })->middleware('plan:enterprise')->name('tenant.multi-store');
+
+        Route::get('/api-integration', function () {
+            return view('api-integration');
+        })->middleware('plan:enterprise')->name('tenant.api-integration');
+
+        Route::get('/white-label', function () {
+            return view('white-label');
+        })->middleware('plan:enterprise')->name('tenant.white-label');
+
+        // Settings - Available based on plan
+        Route::get('/settings', function () {
+            return view('settings');
+        })->middleware('plan:standard')->name('tenant.settings');
     });
 });
